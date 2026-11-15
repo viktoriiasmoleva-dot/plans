@@ -87,6 +87,34 @@
     .planbar { grid-template-columns: repeat(2, 1fr); }
   }
 
+  /* ===== перенос данных (экспорт/импорт) ===== */
+  .databtn {
+    display: inline-block; padding: 8px 14px; cursor: pointer; font-size: 12.5px; font-weight: 600;
+    background: #1e2130; border: 1px solid #2c3145; border-radius: 10px; color: var(--acc);
+    font-family: inherit;
+    transition: color .25s, background-color .25s, border-color .25s;
+  }
+  .databtn:hover { background: var(--accsoft); border-color: var(--acc); }
+  .datamodal {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(10, 12, 18, 0.7);
+    -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+    align-items: center; justify-content: center; padding: 16px;
+  }
+  .datacard {
+    width: min(560px, 100%); max-height: 85vh; overflow: auto;
+    background: #161a28; border: 1px solid #2c3145; border-radius: 16px; padding: 18px;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+  .datacard textarea {
+    min-height: 140px; resize: vertical; background: #0e1119; color: #e7e9f5;
+    border: 1px solid #2c3145; border-radius: 10px; padding: 10px;
+    font: 12px/1.5 ui-monospace, Consolas, monospace;
+  }
+  .datacard .acc { border-color: var(--acc); }
+  .datacard .row { display: flex; gap: 8px; flex-wrap: wrap; }
+
   /* под-вкладки (недели) */
   .subtabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
   .subtab {
@@ -507,6 +535,30 @@
     <div class="maintab" id="pt-train" onclick="switchPlan('train')">🏋️ Тренировки</div>
     <div class="maintab" id="pt-shop" onclick="switchPlan('shop')">🛒 Покупки</div>
     <div class="maintab" id="pt-memes" onclick="switchPlan('memes')">😆 Мемы</div>
+  </div>
+
+  <!-- кнопка переноса данных -->
+  <div style="display:flex; justify-content:flex-end; margin:-6px 0 12px;">
+    <div class="databtn" onclick="openData()">⇅ Перенос данных</div>
+  </div>
+
+  <!-- окно экспорта/импорта -->
+  <div class="datamodal" id="dataModal" onclick="if (event.target === this) closeData()">
+    <div class="datacard">
+      <b>⇅ Перенос данных <span style="color:var(--acc)">· v2</span></b>
+      <p class="muted">Экспорт — сохранить все данные этого браузера, импорт — загрузить их на новом устройстве (телефоне). Импорт заменяет текущие данные.</p>
+      <div class="row">
+        <button class="databtn" onclick="exportData()">📤 Показать данные</button>
+        <button class="databtn" onclick="downloadData()">💾 Скачать файлом</button>
+        <label class="databtn">📥 Выбрать файл<input type="file" accept=".json,.txt,application/json,text/plain" style="display:none" onchange="importFile(this)"></label>
+      </div>
+      <textarea id="dataText" placeholder="Для импорта: вставь сюда текст данных (или выбери файл выше) и нажми «Импорт»"></textarea>
+      <div class="row">
+        <button class="databtn acc" onclick="importData()">📥 Импорт (заменить данные)</button>
+        <button class="databtn" onclick="closeData()">Закрыть</button>
+      </div>
+      <p class="muted" id="dataHint"></p>
+    </div>
   </div>
 
   <!-- ============ ЧЕКЛИСТ ============ -->
@@ -3652,6 +3704,78 @@ spendRender();
     switchMain('check');
   }
 })();
+</script>
+<script>
+/* ===== перенос данных: экспорт и импорт всего localStorage ===== */
+function openData() {
+  document.getElementById('dataModal').style.display = 'flex';
+  document.getElementById('dataHint').textContent = '';
+}
+function closeData() {
+  document.getElementById('dataModal').style.display = 'none';
+}
+
+function exportData() {
+  const obj = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    obj[k] = localStorage.getItem(k);
+  }
+  document.getElementById('dataText').value = JSON.stringify(obj, null, 1);
+  document.getElementById('dataHint').textContent = 'Готово. Скопируй этот текст и отправь себе в Telegram («Избранное») или на почту — на айфоне вставишь его сюда же и нажмёшь «Импорт».';
+}
+
+function downloadData() {
+  const obj = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const k = localStorage.key(i);
+    obj[k] = localStorage.getItem(k);
+  }
+  const blob = new Blob([JSON.stringify(obj, null, 1)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'plany-dannye.json';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  document.getElementById('dataHint').textContent = 'Файл скачивается. Отправь его себе в Telegram / на почту, на айфоне сохрани в «Файлы» — и в приложении нажми «Выбрать файл».';
+}
+
+function importData() {
+  const hint = document.getElementById('dataHint');
+  let obj;
+  try {
+    obj = JSON.parse(document.getElementById('dataText').value);
+  } catch (e) {
+    hint.textContent = 'Не получилось прочитать: это не текст данных приложения. Скопируй его целиком со вкладки «Экспорт» на компьютере.';
+    return;
+  }
+  if (obj === null || typeof obj !== 'object' || Array.isArray(obj)) {
+    hint.textContent = 'Не получилось прочитать: это не текст данных приложения.';
+    return;
+  }
+  let n = 0;
+  for (const k in obj) {
+    if (typeof obj[k] === 'string') {
+      localStorage.setItem(k, obj[k]);
+      n++;
+    }
+  }
+  hint.textContent = 'Загружено записей: ' + n + '. Обновляю страницу…';
+  setTimeout(() => location.reload(), 800);
+}
+
+function importFile(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    document.getElementById('dataText').value = r.result;
+    importData();
+  };
+  r.readAsText(f);
+  input.value = '';
+}
 </script>
 <script>
 /* регистрация сервис-воркера — работает только на http(s), локальный файл откроется как обычно */
