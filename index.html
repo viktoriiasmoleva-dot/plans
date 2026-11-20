@@ -1151,7 +1151,7 @@
   <!-- окно экспорта/импорта -->
   <div class="datamodal" id="dataModal" onclick="if (event.target === this) closeData()">
     <div class="datacard">
-      <b>⇅ Перенос данных <span style="color:var(--acc)">· v3.2 · 19.11.2026</span></b>
+      <b>⇅ Перенос данных <span style="color:var(--acc)">· v3.3 · 20.11.2026</span></b>
       <p class="muted">Экспорт — сохранить все данные этого браузера, импорт — загрузить их на новом устройстве (телефоне). Импорт заменяет текущие данные.</p>
       <div class="row">
         <button class="databtn" onclick="exportData()">📤 Показать данные</button>
@@ -3783,6 +3783,7 @@ function attentionItems() {
   /* день рождения: за три недели и ещё нет идей */
   let bday = null;
   Object.values(people).forEach(p => {
+    if (!p || typeof p !== "object") return;
     const nb = ppNextBday(p);
     if (!nb || nb.days > 21) return;
     if ((p.ideas || []).length) return;
@@ -3793,7 +3794,7 @@ function attentionItems() {
     const when = d === 0 ? "сегодня" : d === 1 ? "завтра" : `через ${d} дн.`;
     const dt = bday.nb.date.toLocaleDateString("ru-RU", { day: "numeric", month: "long" });
     add("bday", "🎂",
-      `У <b>${escHtml(bday.p.n)}</b> день рождения ${when} (${dt}), а идей подарка пока нет.`,
+      `<b>${escHtml(bday.p.n)}</b> — день рождения ${when} (${dt}), а идей подарка пока нет.`,
       "people", 1);
   }
 
@@ -3825,16 +3826,20 @@ function attentionItems() {
     }
   }
 
-  /* вода и дела — только во второй половине дня */
+  /* вода и дела — только во второй половине дня и только если человек
+     вообще пользуется чеклистом (иначе это не напоминание, а укор) */
   const st = loadDay(today);
   const water = waterOf(st);
   const done = itemsCount(st);
-  if (hour >= 15 && water < 5) {
+  const yEnt = loadDay(addDays(today, -1));
+  const engaged = done > 0 || water > 0 || itemsCount(yEnt) > 0 || waterOf(yEnt) > 0 ||
+    Object.keys(localStorage).some(k => /^fitcheck:\d{4}-\d{2}-\d{2}$/.test(k));
+  if (engaged && hour >= 15 && water < 5) {
     add("water", "💧",
       `Воды сегодня <b>${water} из 8</b>. До вечера ещё можно догнать.`,
       "c", 4);
   }
-  if (hour >= 20 && done < 8) {
+  if (engaged && hour >= 20 && done < 8) {
     add("check", "✅",
       `Сделано <b>${done} из ${ITEMS.length}</b> дел. Осталось ${ITEMS.length - done} — есть ещё время.`,
       "c", 5);
@@ -3842,7 +3847,7 @@ function attentionItems() {
 
   /* дневник: вечером пусто */
   const dEnt = diary[today] || {};
-  if (hour >= 20 && !dEnt.e && !dEnt.m && !String(dEnt.n || "").trim()) {
+  if (engaged && hour >= 20 && !dEnt.e && !dEnt.m && !String(dEnt.n || "").trim()) {
     add("diary", "📝", "Дневник за сегодня пуст. Пара строк — и картина недели будет честной.", "d", 6);
   }
 
@@ -5151,6 +5156,7 @@ function ckOnShow() {
   if (v === "m") renderMonth();
   if (v === "d") renderDiary();
   if (v === "wk") renderWeek();
+  renderAttention();
 }
 
 renderMeme();

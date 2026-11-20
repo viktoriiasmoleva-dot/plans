@@ -1,6 +1,6 @@
 /* Service worker приложения «Планы»: офлайн-режим.
    Версию кэша меняем при каждом обновлении index.html. */
-const CACHE = 'plans-v3-2026-11-19e';
+const CACHE = 'plans-v3-2026-11-20a';
 
 const ASSETS = [
   './',
