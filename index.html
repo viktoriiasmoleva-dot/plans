@@ -632,6 +632,32 @@
   .sp-bar > i { display: block; height: 100%; width: 0; border-radius: 8px; background: linear-gradient(90deg, #4fd1c5, #6ee7a0); transition: width .3s, background .3s; }
   .sp-bar.warn > i { background: linear-gradient(90deg, #ffd166, #f0a35e); }
   .sp-bar.over > i { background: linear-gradient(90deg, #f06ca8, #e05a6f); }
+
+  /* «сегодня»: потрачено и остаток дневной нормы */
+  .sp-today {
+    margin: 4px 0 12px; padding: 10px 12px 11px;
+    background: linear-gradient(135deg, color-mix(in srgb, var(--acc) 9%, #1d2132) 0%, #1b1f2d 100%);
+    border: 1px solid color-mix(in srgb, var(--acc) 24%, #2c3145);
+    border-radius: 12px;
+  }
+  .sp-today-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
+  .sp-today-item span { display: block; font-size: 11px; color: #8f94ad; }
+  .sp-today-item b {
+    display: block; font-size: 18px; color: #fff;
+    letter-spacing: -.3px; white-space: nowrap; font-variant-numeric: tabular-nums;
+  }
+  .sp-today-item.right { text-align: right; }
+  .sp-today-item b.good { color: #6ee7a0; }
+  .sp-today-item b.bad { color: #ff9aa8; }
+  .sp-today-bar { height: 6px; border-radius: 999px; background: #2a2e42; overflow: hidden; margin: 8px 0 6px; }
+  .sp-today-bar > i {
+    display: block; height: 100%; width: 0; border-radius: 999px;
+    background: linear-gradient(90deg, #4fd1c5, #6ee7a0);
+    transition: width .3s, background .3s;
+  }
+  .sp-today-bar.warn > i { background: linear-gradient(90deg, #ffd166, #f0a35e); }
+  .sp-today-bar.over > i { background: linear-gradient(90deg, #f06ca8, #e05a6f); }
+  .sp-today-hint { font-size: 11.5px; color: #8f94ad; line-height: 1.4; }
   .sp-form { display: grid; grid-template-columns: 118px 1fr; gap: 8px; margin: 12px 0 8px; }
   .sp-form .wide { grid-column: 1 / -1; }
   .sp input, .sp select {
@@ -1071,7 +1097,8 @@
   /* полосы прогресса и кнопки — градиент из двух цветов раздела */
   #page-check .steps-bar i,
   #page-check .mprog .mfill,
-  .sp-bar > i { background: linear-gradient(90deg, var(--acc), var(--acc2)); }
+  .sp-bar > i,
+  .sp-today-bar > i { background: linear-gradient(90deg, var(--acc), var(--acc2)); }
   #page-check .steps-add,
   #page-check .wadd,
   #page-check .msform .msadd,
@@ -2704,6 +2731,22 @@
         <div class="sp-cell"><b id="spPerDay">—</b><span>можно в день</span></div>
       </div>
       <div class="sp-bar" id="spBar"><i id="spBarFill"></i></div>
+
+      <div class="sp-today">
+        <div class="sp-today-row">
+          <div class="sp-today-item">
+            <span>Сегодня потрачено</span>
+            <b id="spTodaySpent">0 ₽</b>
+          </div>
+          <div class="sp-today-item right">
+            <span>Осталось на сегодня</span>
+            <b id="spTodayLeft">—</b>
+          </div>
+        </div>
+        <div class="sp-today-bar" id="spTodayBar"><i id="spTodayFill"></i></div>
+        <div class="sp-today-hint" id="spTodayHint">Задайте бюджет месяца — посчитаем норму на день.</div>
+      </div>
+
       <p class="muted" id="spVerdict">Введите бюджет и добавляйте траты — всё посчитается само.</p>
     </div>
 
@@ -3477,6 +3520,9 @@ function checkAuto() {
   checkDate();
   maybeAutoRoll();
   renderNow();
+  /* «сегодня» в тратах должно обновиться после полуночи */
+  const spPage = document.getElementById("page-spend");
+  if (spPage && spPage.style.display !== "none") spendRender();
 }
 setInterval(checkAuto, 30 * 1000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) checkAuto(); });
@@ -5250,6 +5296,29 @@ function spCurrent() {
   return spLoad().filter(x => String(x.d).slice(0, 7) === mk);
 }
 
+/* «сегодня»: сколько потрачено и сколько осталось от нормы на день.
+   Норма = (бюджет − траты до сегодня) / дней в месяце, включая сегодня:
+   недотраченное вчера переходит в норму сегодня. */
+function spTodayStats() {
+  const now = new Date();
+  const today = spDateKey(now);
+  const list = spCurrent();
+  const spentToday = list.reduce((s, x) =>
+    s + (String(x.d) === today ? (Number(x.a) || 0) : 0), 0);
+  const spentBefore = list.reduce((s, x) =>
+    s + (String(x.d) < today ? (Number(x.a) || 0) : 0), 0);
+  const budget = spBudget();
+  const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+  const daysLeft = Math.max(1, daysInMonth - now.getDate() + 1);
+  const norm = budget > 0 ? Math.max(0, Math.floor((budget - spentBefore) / daysLeft)) : null;
+  return {
+    budget: budget,
+    spentToday: spentToday,
+    norm: norm,
+    leftToday: norm == null ? null : norm - spentToday
+  };
+}
+
 function spendCopy() {
   const now = new Date();
   const list = spCurrent().slice().sort((a, b) =>
@@ -5262,6 +5331,11 @@ function spendCopy() {
     lines.push("Бюджет: " + spFmt(budget));
     lines.push("Потрачено: " + spFmt(spent));
     lines.push("Осталось: " + spFmt(budget - spent));
+    const tt = spTodayStats();
+    lines.push("Сегодня: " + spFmt(tt.spentToday) +
+      (tt.norm == null ? "" :
+        " · осталось " + (tt.leftToday < 0 ? "−" : "") + spFmt(Math.abs(tt.leftToday)) +
+        " из " + spFmt(tt.norm)));
   } else {
     lines.push("Потрачено: " + spFmt(spent));
   }
@@ -5329,6 +5403,41 @@ function spendRender() {
       (pct >= 75 ? " Близко к лимиту: хотелки — на паузу, еду из плана не трогаем." : " Всё идёт по плану.");
   } else {
     verdict.textContent = "Перерасход " + spFmt(-left) + ". Это не катастрофа: уберите пару хотелок из следующей недели, но не голодайте и не отменяйте еду из плана.";
+  }
+
+  /* ---- сегодня: потрачено и остаток нормы на день ---- */
+  const t = spTodayStats();
+  document.getElementById("spTodaySpent").textContent = spFmt(t.spentToday);
+  const tLeft = document.getElementById("spTodayLeft");
+  const tBar = document.getElementById("spTodayBar");
+  const tFill = document.getElementById("spTodayFill");
+  const tHint = document.getElementById("spTodayHint");
+  if (t.norm == null) {
+    tLeft.textContent = "—";
+    tLeft.className = "";
+    tFill.style.width = "0%";
+    tBar.classList.remove("warn", "over");
+    tHint.textContent = "Бюджет месяца не задан — впишите сумму выше, и здесь появится норма на день.";
+  } else {
+    const over = t.leftToday < 0;
+    tLeft.textContent = (over ? "−" : "") + spFmt(Math.abs(t.leftToday));
+    tLeft.className = over ? "bad" : (t.leftToday > 0 ? "good" : "");
+    const pctToday = t.norm > 0
+      ? Math.round(t.spentToday / t.norm * 100)
+      : (t.spentToday > 0 ? 100 : 0);
+    tFill.style.width = (t.norm > 0 ? Math.min(100, pctToday) : 0) + "%";
+    tBar.classList.toggle("warn", pctToday >= 75 && !over);
+    tBar.classList.toggle("over", over);
+    if (over) {
+      tHint.textContent = "Сегодня больше нормы на " + spFmt(-t.leftToday) +
+        ". Завтра норма станет меньше — это нормально.";
+    } else if (t.norm === 0) {
+      tHint.textContent = "Бюджет месяца уже израсходован — сегодня только самое необходимое.";
+    } else if (t.spentToday === 0) {
+      tHint.textContent = "Норма на сегодня — " + spFmt(t.norm) + ". Пока ничего не потрачено.";
+    } else {
+      tHint.textContent = "Норма на сегодня — " + spFmt(t.norm) + " · потрачено " + pctToday + "%.";
+    }
   }
 
   const catsBox = document.getElementById("spCats");
