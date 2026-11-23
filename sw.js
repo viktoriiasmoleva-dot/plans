@@ -1,6 +1,6 @@
 /* Service worker приложения «Планы»: офлайн-режим.
    Версию кэша меняем при каждом обновлении index.html. */
-const CACHE = 'plans-v3-2026-11-21a';
+const CACHE = 'plans-v3-2026-11-23a';
 
 const ASSETS = [
   './',
@@ -36,7 +36,8 @@ const ASSETS = [
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open(CACHE)
-      .then((cache) => cache.addAll(ASSETS))
+      /* каждый файл кладём отдельно: один недоступный не ломает весь офлайн */
+      .then((cache) => Promise.all(ASSETS.map((u) => cache.add(u).catch(() => null))))
       .then(() => self.skipWaiting())
   );
 });
