@@ -133,6 +133,78 @@
   .datacard .acc { border-color: var(--acc); }
   .datacard .row { display: flex; gap: 8px; flex-wrap: wrap; }
 
+  /* ===== 🌙 ночная смена ===== */
+  .topbar {
+    display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+    margin: -6px 0 12px;
+  }
+  .nightbtn { display: inline-flex; align-items: center; gap: 7px; }
+  .nightbtn .ndot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: #5b76c9; box-shadow: 0 0 9px #5b76c9;
+  }
+  .nightbtn.on {
+    background: #18213d; border-color: #5b76c9; color: #dbe3ff;
+  }
+  .nightbtn.on .ndot { background: #9db4ff; box-shadow: 0 0 12px #9db4ff; }
+  .night-form { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .night-form label {
+    display: flex; flex-direction: column; gap: 5px;
+    font-size: 12px; color: #8f94ad;
+  }
+  .night-form input {
+    width: 100%; background: #0e1119; color: #e7e9f5;
+    border: 1px solid #3a3f63; border-radius: 10px; padding: 9px 10px;
+    font: inherit; color-scheme: dark;
+  }
+  .night-form input:focus { outline: none; border-color: var(--acc); }
+  @media (max-width: 430px) { .night-form { grid-template-columns: 1fr; } }
+  .nightcard {
+    background: linear-gradient(160deg, #18213d 0%, #1a1f33 60%, #201b2e 100%);
+    border-color: #3a4a7a;
+  }
+  .nightcard h2 { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .nightchip {
+    font-size: 11.5px; font-weight: 600; color: #dbe3ff;
+    background: #263257; border: 1px solid #4b63a8;
+    border-radius: 999px; padding: 3px 9px;
+  }
+  .night-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin: 12px 0 4px;
+  }
+  @media (max-width: 620px) { .night-grid { grid-template-columns: 1fr; } }
+  .night-seg {
+    background: rgba(255, 255, 255, .035);
+    border: 1px solid rgba(255, 255, 255, .07);
+    border-radius: 14px; padding: 12px 13px;
+  }
+  .night-seg h3 { margin: 0 0 8px; font-size: 13.5px; color: #e7e9f5; }
+  .night-row {
+    display: flex; gap: 9px; padding: 6px 0;
+    border-bottom: 1px dashed rgba(255, 255, 255, .07);
+  }
+  .night-row:last-child { border-bottom: none; }
+  .night-time {
+    flex: 0 0 46px; font-size: 12px; font-weight: 700;
+    color: #9fb4ff; font-variant-numeric: tabular-nums;
+  }
+  .night-txt { flex: 1; min-width: 0; font-size: 12.5px; line-height: 1.4; color: #c9cce0; }
+  .night-txt b { display: block; color: #fff; font-weight: 600; font-size: 12.5px; }
+  .night-txt small { display: block; color: #9aa0c8; font-size: 11.5px; margin-top: 1px; }
+  .night-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .night-actions .databtn { font-size: 12px; padding: 7px 11px; }
+  .nightcard .note { border-top-color: rgba(255, 255, 255, .1); }
+  .databtn.acc { background: var(--acc); border-color: var(--acc); color: #0b0e14; }
+  .databtn.acc:hover { filter: brightness(1.08); background: var(--acc); }
+  #page-check .nplan-note { margin-top: 10px; font-size: 12px; line-height: 1.45; color: #a9aecb; }
+  #page-check .nplan-col .night-row { border-bottom-color: rgba(255, 255, 255, .06); }
+  #page-check .nplan-col .night-row:last-child { border-bottom: none; }
+  #page-check .nplan-col .night-time { flex-basis: 40px; font-size: 11.5px; }
+  #page-check .nplan-col .night-txt { font-size: 11.5px; }
+  #page-check .nplan-col .night-txt b { font-size: 12px; }
+  #page-check .nplan-col .night-txt small { font-size: 11px; }
+
   /* под-вкладки (недели) */
   .subtabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
   .subtab {
@@ -304,8 +376,35 @@
   }
   #page-check .minibtn:hover { background: #343952; color: #fff; }
   #page-check .gentlebar.on .minibtn { background: #4a2740; border-color: #b55c8f; color: #ffd7ea; }
+  /* ночная смена */
+  #page-check .nightbar {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    background: #171c33; border: 1px solid #2d3760; border-radius: 14px;
+    padding: 9px 14px; margin-bottom: 12px; font-size: 12.5px; line-height: 1.45; color: #c3c9ea;
+  }
+  #page-check .nightbar.on { background: #18213d; border-color: #5b76c9; color: #dbe3ff; }
+  #page-check .nightbar.after { background: #2a2119; border-color: #a4743f; color: #f2d9bd; }
+  #page-check .nightbar.on .minibtn { background: #263257; border-color: #5b76c9; color: #dbe3ff; }
+  #page-check .nightbar.after .minibtn { background: #3a2a1c; border-color: #a4743f; color: #f2d9bd; }
   #page-check .item.next { background: #1b2a3a; box-shadow: inset 3px 0 0 var(--acc); }
   #page-check .item.next .label { color: #fff; }
+  /* подсказки «сегодня / завтра» в ночной смене */
+  #page-check .nplan { display: none; margin-bottom: 12px; }
+  #page-check .nplan.on { display: block; animation: pagein .3s ease; }
+  #page-check .nplan h3 { font-size: 13px; color: var(--acc); margin-bottom: 8px; }
+  #page-check .nplan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #page-check .nplan-col {
+    background: #141a2e; border: 1px solid #2d3760; border-radius: 12px;
+    padding: 11px 12px;
+  }
+  #page-check .nplan-col.tomorrow { background: #1b1826; border-color: #4a3a63; }
+  #page-check .nplan-col b { display: block; font-size: 12.5px; color: #fff; margin-bottom: 7px; }
+  #page-check .nplan-col ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+  #page-check .nplan-col li {
+    position: relative; padding-left: 13px; font-size: 12px; line-height: 1.45; color: #c9cce0;
+  }
+  #page-check .nplan-col li::before { content: "›"; position: absolute; left: 1px; color: var(--acc); }
+  @media (max-width: 560px) { #page-check .nplan-grid { grid-template-columns: 1fr; } }
   /* шаги */
   #page-check .stepsbox {
     background: #1c2433; border: 1px solid #2c3a52; border-radius: 16px;
@@ -1480,15 +1579,18 @@
     <div class="maintab" id="pt-memes" onclick="switchPlan('memes')"><span class="mt-i"><svg aria-hidden="true"><use href="#i-smile"></use></svg></span><span>Мемы</span></div>
   </div>
 
-  <!-- кнопка переноса данных -->
-  <div style="display:flex; justify-content:flex-end; margin:-6px 0 12px;">
+  <!-- кнопки управления -->
+  <div class="topbar">
+    <button class="databtn nightbtn" id="nightBtn" onclick="openNight()" title="Включить ночную смену и подстроить планы">
+      <span aria-hidden="true">🌙</span><span class="ndot" aria-hidden="true"></span><span id="nightBtnText">Ночная смена</span>
+    </button>
     <div class="databtn" onclick="openData()">⇅ Перенос данных</div>
   </div>
 
   <!-- окно экспорта/импорта -->
   <div class="datamodal" id="dataModal" onclick="if (event.target === this) closeData()">
     <div class="datacard">
-      <b>⇅ Перенос данных <span style="color:var(--acc)">· v3.5 · 23.11.2026</span></b>
+      <b>⇅ Перенос данных <span style="color:var(--acc)">· v3.6 · 24.11.2026</span></b>
       <p class="muted">Экспорт — сохранить все данные этого браузера, импорт — загрузить их на новом устройстве (телефоне). Импорт заменяет текущие данные.</p>
       <div class="row">
         <button class="databtn" onclick="exportData()">📤 Показать данные</button>
@@ -1501,6 +1603,31 @@
         <button class="databtn" onclick="closeData()">Закрыть</button>
       </div>
       <p class="muted" id="dataHint"></p>
+    </div>
+  </div>
+
+  <!-- окно ночной смены -->
+  <div class="datamodal" id="nightModal" onclick="if (event.target === this) closeNight()">
+    <div class="datacard">
+      <b>🌙 Ночная смена <span style="color:var(--acc)" id="nightModalState"></span></b>
+      <p class="muted">Включите, когда работаете ночью. Приложение сдвинет чеклист, питание и тренировки: сутки будут меняться после сна, а рекомендации появятся на эту смену и следующий день.</p>
+      <div class="night-form">
+        <label style="grid-column:1/-1;">Дата начала смены
+          <input type="date" id="nightDate">
+        </label>
+        <label>Начало
+          <input type="time" id="nightStart" value="20:00">
+        </label>
+        <label>Конец
+          <input type="time" id="nightEnd" value="08:00">
+        </label>
+      </div>
+      <p class="muted" id="nightModalHint"></p>
+      <div class="row">
+        <button class="databtn acc" id="nightEnableBtn" onclick="nightApply()">Включить</button>
+        <button class="databtn" id="nightOffBtn" onclick="nightDisable(); closeNight()">Выключить</button>
+        <button class="databtn" onclick="closeNight()">Закрыть</button>
+      </div>
     </div>
   </div>
 
@@ -1521,6 +1648,8 @@
       <h1>✅ Чеклист дня</h1>
       <div class="date" id="today"></div>
       <div class="nowbar" id="nowBar"></div>
+      <div class="nightbar" id="nightBar"></div>
+      <div class="nplan" id="nightPlan"></div>
 
       <div class="dayhero">
         <div class="ringbox">
@@ -1558,7 +1687,7 @@
           <button class="steps-add" onclick="setSteps()">Сохранить</button>
         </div>
         <div class="steps-bar"><i id="stepsFill"></i></div>
-        <div class="steps-hint">Цель плана — 10 000–12 000. При 10 000+ пункт «Шаги» отмечается сам.</div>
+        <div class="steps-hint" id="stepsHint">Цель плана — 10 000–12 000. При 10 000+ пункт «Шаги» отмечается сам.</div>
       </div>
 
       <!-- кот-мотиватор -->
@@ -1951,6 +2080,7 @@
     </div>
 
     <section class="panel active" id="food-info">
+      <div id="foodNight" style="display:none;"></div>
       <div class="card">
         <h2>⚡ Ускоренный режим: ~1600 ккал/день</h2>
         <p>Дефицит от расхода ~2350–2450 ккал — около 33%, безопасно без врача.</p>
@@ -1970,9 +2100,9 @@
         <p>☕ Кофеин и сон в 00:00: последний кофе/чёрный чай — до ~16:00. После тренировки — вода или травяной чай.</p>
       </div>
 
-      <div class="card">
+      <div class="card" id="mealCard">
         <h3>⏰ Режим приёмов пищи (МСК, сон в 00:00)</h3>
-        <table>
+        <table id="mealTable">
           <tr><th>Приём</th><th>Время</th><th>Что</th></tr>
           <tr><td>☕ Завтрак</td><td><b>09:00</b></td><td>из плана + стакан воды до еды</td></tr>
           <tr><td>🍎 Перекус 1</td><td><b>11:00</b></td><td>из плана</td></tr>
@@ -2251,6 +2381,7 @@
     </div>
 
     <section class="panel active" id="tr-info">
+      <div id="trainNight" style="display:none;"></div>
       <div class="card">
         <h2>🏋️ Исходные данные</h2>
         <p>25 лет, 165 см, 89 кг → цель ~70–75 кг, ускоренный темп.</p>
@@ -3098,6 +3229,7 @@
   </div>
 
   <div id="page-myday" style="display:none;">
+    <div class="card nightcard" id="mdNight" style="display:none;"></div>
     <div class="card" id="mdHead"></div>
     <div class="card" id="mdMenu"></div>
     <div class="card" id="mdTrain"></div>
@@ -3329,8 +3461,8 @@ const MD_TRAIN = {
 const PLAN_START = new Date(2026, 10, 9); // понедельник 09.11.2026 — старт недели 1
 
 function mdRender() {
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  /* в ночной смене «сегодня» — день смены, даже если за окном уже завтра */
+  const today = s2d(typeof currentDay === "string" ? currentDay : dayKey());
   let w = Math.floor((today - PLAN_START) / (7 * 86400000)) + 1;
   const days = ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"];
   const dow = days[today.getDay()]; // ключ дня из MENU
@@ -3345,6 +3477,9 @@ function mdRender() {
     `<p><b>${names[w]}</b>${cycle ? " — месяц закончился, идём вторым кругом (меню недели " + w + ")" : ""}</p>` +
     `<p class="muted">Старт плана — 09.11.2026. Если день съехал (меню «не того дня») — не страшно: берите меню ближайшего похожего дня по продуктам, а не гоняйтесь за точной строкой.</p>`;
 
+  /* ночная смена: подробная карточка на сегодня и завтра */
+  renderMdNight();
+
   const day = MENU[w][dow];
   const menuHtml = MD_MEALS.map(([label, key]) =>
     `<p><b>${label}</b><br>${day[key]}</p>`).join("<hr style='border:none;border-top:1px solid #2c3145;margin:8px 0;'>");
@@ -3352,7 +3487,18 @@ function mdRender() {
     `<h2>🍽 Меню (${day.tag})</h2>${menuHtml}` +
     `<p class="muted">Вода: 2–2,2 л за день. Стакан воды за 20 минут до еды. Соль до 5 г.</p>`;
 
-  const [title, note, vids] = MD_TRAIN[dow];
+  let [title, note, vids] = MD_TRAIN[dow];
+  const mdPhase = nightPhase();
+  if (mdPhase !== "off") {
+    title = mdPhase === "shift" ? "🧘 Лёгкая зарядка перед сменой" : "🧘 Восстановление после смены";
+    note = mdPhase === "shift"
+      ? "В день ночной смены силовую не делаем: 10 мин зарядки до смены и прогулка. Силовая вернётся в обычный день."
+      : "После смены — только растяжка и прогулка на свету. Силовую пропускаем: восстановление важнее.";
+    vids = [
+      ["Разминка/зарядка 10 мин", "https://www.youtube.com/watch?v=nG-Rc2QnnHM"],
+      ["Растяжка 10 мин", "https://www.youtube.com/watch?v=XZ6sNPB3jlI"]
+    ];
+  }
   document.getElementById("mdTrain").innerHTML =
     `<h2>🏋️ ${title}</h2><p>${note}</p>` +
     vids.map(([t, u]) => `<p>• <a href="${u}" target="_blank" rel="noopener">${t}</a></p>`).join("") +
@@ -3939,11 +4085,237 @@ const KEY = "fitcheck";
 const loadDay = k => JSON.parse(localStorage.getItem(KEY + ":" + k) || "{}");
 const saveDay = (k, st) => localStorage.setItem(KEY + ":" + k, JSON.stringify(st));
 
-/* дата по местному времени (не UTC): день меняется в полночь по вашим часам */
+/* дата по местному времени (не UTC): обычный день меняется в полночь */
 function dayKey(d = new Date()) {
   return d.getFullYear() + "-" +
     String(d.getMonth() + 1).padStart(2, "0") + "-" +
     String(d.getDate()).padStart(2, "0");
+}
+
+/* ===== 🌙 ночная смена =====
+   Кнопка сверху. График не фиксированный: пользователь задаёт дату,
+   начало и конец смены. Пока режим активен, «сутки» меняются после сна,
+   а чеклист, питание и тренировки перестраиваются на смену и следующий день. */
+const NIGHT_KEY = "fitcheck:night";
+const NIGHT_BOUNDARY = 15; /* запасной ориентир для старых записей */
+const NIGHT_WAKE_MIN = 8 * 60 + 30; /* от конца смены до подъёма: еда + сон */
+const NIGHT_DEFAULT_START = "20:00";
+const NIGHT_DEFAULT_END = "08:00";
+
+function hmToMin(hm) {
+  const m = String(hm || "").match(/^(\d{1,2}):(\d{2})$/);
+  if (!m) return null;
+  const h = Number(m[1]), min = Number(m[2]);
+  if (h > 23 || min > 59) return null;
+  return h * 60 + min;
+}
+function minToHM(mins) {
+  mins = ((Math.round(mins) % 1440) + 1440) % 1440;
+  return String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
+}
+function hmAt(ts) {
+  const d = new Date(ts);
+  return String(d.getHours()).padStart(2, "0") + ":" + String(d.getMinutes()).padStart(2, "0");
+}
+function hmOffset(ts, minutes) { return hmAt(ts + minutes * 60000); }
+function addDaysKey(k, n) {
+  const d = s2d(k);
+  d.setDate(d.getDate() + n);
+  return dayKey(d);
+}
+function nightClear() {
+  NIGHT = null;
+  try { localStorage.removeItem(NIGHT_KEY); } catch (e) {}
+}
+function nightShiftItems() {
+  if (!NIGHT || !isFinite(NIGHT.shiftStart) || !isFinite(NIGHT.shiftEnd)) return ITEMS;
+  const s = NIGHT.shiftStart, e = NIGHT.shiftEnd;
+  const dur = Math.max(60, Math.round((e - s) / 60000));
+  const lunch = Math.round(dur * 0.4);
+  const snack = Math.round(dur * 0.7);
+  return [
+    { t: `⚖️ Взвешивание ${hmOffset(s, -240)}`, d: "после сна, до еды и воды" },
+    { t: `☀️ Зарядка ${hmOffset(s, -210)}`, d: "10 мин стоя, без прыжков — разбудить тело" },
+    { t: `🧘 Лёгкая тренировка ${hmOffset(s, -195)}`, d: "в день смены — только зарядка/растяжка, без силовой" },
+    { t: `☕ ${hmOffset(s, -180)} — Завтрак`, d: "плотный: белок + крупа + овощи" },
+    { t: `🍎 ${hmOffset(s, -60)} — Перекус перед сменой`, d: "творог/йогурт или яйца, без кофеина" },
+    { t: `🚶 ${hmOffset(s, -30)} — Прогулка перед сменой`, d: "10–15 мин на свежем воздухе" },
+    { t: `🍲 ${hmOffset(s, lunch)} — Обед на смене`, d: "белок + гарнир + овощи; не переедать" },
+    { t: `🍐 ${hmOffset(s, snack)} — Перекус в смене`, d: "белок + сложный углевод; кофеин — не позже" },
+    { t: `🥗 ${hmOffset(e, 30)} — Лёгкий ужин после смены`, d: "белок + овощи, без тяжёлого и сладкого" },
+    { t: `🚶 ${hmOffset(e, 60)} — 10 мин на воздухе`, d: "спокойно, перед сном" },
+    { t: "👣 Шаги 8–10 тыс.", d: "добираем в смене и по дороге, без фанатизма" },
+    { t: `😴 Сон после смены до ${hmAt(NIGHT.wakeAt)}`, d: "шторы, тишина, телефон в сторону" }
+  ];
+}
+function nightAfterItems() {
+  if (!NIGHT || !isFinite(NIGHT.wakeAt)) return ITEMS;
+  const w = NIGHT.wakeAt;
+  return [
+    { t: `⚖️ Взвешивание ${hmOffset(w, 30)}`, d: "после подъёма, до еды и воды" },
+    { t: `☀️ Зарядка ${hmOffset(w, 45)}`, d: "10 мин мягко — сон ещё в мышцах" },
+    { t: `🧘 Восстановление ${hmOffset(w, 60)}`, d: "растяжка/прогулка вместо силовой" },
+    { t: `☕ ${hmOffset(w, 90)} — Завтрак`, d: "белок + крупа, свет и вода" },
+    { t: `🍎 ${hmOffset(w, 240)} — Перекус 1`, d: "йогурт/творог или фрукт" },
+    { t: `🍲 ${hmOffset(w, 300)} — Обед`, d: "белок + гарнир + салат" },
+    { t: `🚶 ${hmOffset(w, 360)} — Прогулка`, d: "15–20 мин лёгким темпом" },
+    { t: `🍐 ${hmOffset(w, 420)} — Перекус 2`, d: "творог или яйца" },
+    { t: `🥗 ${hmOffset(w, 480)} — Ужин`, d: "лёгкий, белок + овощи" },
+    { t: `🌙 ${hmOffset(w, 510)} — Спокойный вечер`, d: "без экрана и кофеина, готовимся ко сну" },
+    { t: "👣 Шаги 6–8 тыс.", d: "без давления: восстановление важнее" },
+    { t: `😴 Сон в ${hmOffset(w, 540)}`, d: "в обычное время, чтобы вернуть ритм" }
+  ];
+}
+
+function nightSchedule() {
+  if (!NIGHT) return ITEMS;
+  const p = nightPhase();
+  if (p === "off") return ITEMS;
+  return p === "shift" ? nightShiftItems() : nightAfterItems();
+}
+
+function nightLoad() {
+  let n = null;
+  try { n = JSON.parse(localStorage.getItem(NIGHT_KEY) || "null"); } catch (e) {}
+  if (!n || typeof n !== "object" || typeof n.start !== "string" ||
+      !isFinite(n.ts) || !isFinite(n.shiftEnd) || !isFinite(n.afterEnd)) return null;
+  /* старый формат без реальных часов смены — просим включить заново */
+  if (!isFinite(n.shiftStart) || !n.startHM) {
+    try { localStorage.removeItem(NIGHT_KEY); } catch (e) {}
+    return null;
+  }
+  if (!isFinite(n.wakeAt)) n.wakeAt = n.shiftEnd + NIGHT_WAKE_MIN * 60000;
+  if (Date.now() >= n.afterEnd) {
+    try { localStorage.removeItem(NIGHT_KEY); } catch (e) {}
+    return null;
+  }
+  return n;
+}
+
+let NIGHT = nightLoad();
+let lastNightPhase = nightPhase();
+
+/* «сутки» в ночном режиме меняются после сна, а не в полночь */
+function todayKey() {
+  if (NIGHT) {
+    if (Date.now() >= NIGHT.afterEnd) nightClear();
+    else if (Date.now() < NIGHT.wakeAt) return NIGHT.start;
+    else return addDaysKey(NIGHT.start, 1);
+  }
+  return dayKey(new Date());
+}
+
+function nightPhase() {
+  if (!NIGHT) return "off";
+  const now = Date.now();
+  if (now >= NIGHT.afterEnd) { nightClear(); return "off"; }
+  const t = todayKey();
+  if (!NIGHT) return "off";
+  if (t === NIGHT.start) return "shift"; /* смена + сон после неё */
+  if (t === addDaysKey(NIGHT.start, 1)) return "after"; /* день восстановления */
+  return "off";
+}
+
+function nightEnable(dateStr, startHM, endHM) {
+  const sm = hmToMin(startHM), em = hmToMin(endHM);
+  if (sm == null || em == null || sm === em) return false;
+  const base = dateStr ? s2d(dateStr) : new Date();
+  base.setHours(0, 0, 0, 0);
+  const shiftStart = new Date(base);
+  shiftStart.setMinutes(sm);
+  const shiftEnd = new Date(base);
+  shiftEnd.setMinutes(em);
+  if (em <= sm) shiftEnd.setDate(shiftEnd.getDate() + 1);
+  const wakeAt = shiftEnd.getTime() + NIGHT_WAKE_MIN * 60000;
+  /* «день после смены» длится до следующего сна + запас */
+  const afterEnd = wakeAt + 12 * 3600000;
+  NIGHT = {
+    start: dayKey(base),
+    startHM: minToHM(sm),
+    endHM: minToHM(em),
+    shiftStart: shiftStart.getTime(),
+    shiftEnd: shiftEnd.getTime(),
+    wakeAt,
+    afterEnd,
+    ts: Date.now()
+  };
+  try { localStorage.setItem(NIGHT_KEY, JSON.stringify(NIGHT)); } catch (e) {}
+  overlayShown = false;
+  const ov = document.getElementById("dayOverlay");
+  if (ov) ov.classList.remove("show");
+  currentDay = todayKey();
+  state = loadDay(currentDay);
+  render();
+  renderAttention();
+  mdRender();
+  renderFoodNight();
+  renderTrainNight();
+  lastNightPhase = nightPhase();
+  return true;
+}
+
+function nightDisable() {
+  nightClear();
+  overlayShown = false;
+  const ov = document.getElementById("dayOverlay");
+  if (ov) ov.classList.remove("show");
+  currentDay = todayKey();
+  state = loadDay(currentDay);
+  render();
+  renderAttention();
+  mdRender();
+  renderFoodNight();
+  renderTrainNight();
+  lastNightPhase = nightPhase();
+}
+
+function nightAction() {
+  if (nightPhase() === "off") { openNight(); return; }
+  nightDisable();
+}
+
+function defaultNightDate(startHM, endHM) {
+  const now = new Date();
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const sm = hmToMin(startHM), em = hmToMin(endHM);
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  if (sm != null && em != null && sm > em && nowMin < em) d.setDate(d.getDate() - 1);
+  return dayKey(d);
+}
+function openNight() {
+  const modal = document.getElementById("nightModal");
+  if (!modal) return;
+  const s = (NIGHT && NIGHT.startHM) || NIGHT_DEFAULT_START;
+  const e = (NIGHT && NIGHT.endHM) || NIGHT_DEFAULT_END;
+  document.getElementById("nightStart").value = s;
+  document.getElementById("nightEnd").value = e;
+  document.getElementById("nightDate").value = (NIGHT && NIGHT.start) || defaultNightDate(s, e);
+  document.getElementById("nightModalState").textContent = NIGHT ? "· включена" : "";
+  document.getElementById("nightEnableBtn").textContent = NIGHT ? "Обновить" : "Включить";
+  document.getElementById("nightOffBtn").style.display = NIGHT ? "" : "none";
+  document.getElementById("nightModalHint").textContent = NIGHT
+    ? "Смена: " + s2d(NIGHT.start).toLocaleDateString("ru-RU", { day: "numeric", month: "long" }) + ", " + NIGHT.startHM + "–" + NIGHT.endHM + ". Сутки меняются после сна."
+    : "По умолчанию 20:00–08:00. Если смена уже идёт и сейчас раннее утро, дата автоматически встанет на вчера.";
+  modal.style.display = "flex";
+}
+function closeNight() {
+  const m = document.getElementById("nightModal");
+  if (m) m.style.display = "none";
+}
+function nightApply() {
+  const hint = document.getElementById("nightModalHint");
+  const date = document.getElementById("nightDate").value;
+  const s = document.getElementById("nightStart").value;
+  const e = document.getElementById("nightEnd").value;
+  if (!date || hmToMin(s) == null || hmToMin(e) == null || s === e) {
+    hint.textContent = "Проверьте дату и время: начало и конец не должны совпадать.";
+    return;
+  }
+  if (!nightEnable(date, s, e)) {
+    hint.textContent = "Не получилось включить. Проверьте время.";
+    return;
+  }
+  closeNight();
 }
 
 function mergeDay(a, b) {
@@ -3956,7 +4328,7 @@ function mergeDay(a, b) {
   return out;
 }
 
-let currentDay = dayKey();
+let currentDay = todayKey();
 let state = loadDay(currentDay);
 /* перенос отметок из старого формата, если они были (большие даты по UTC) */
 const legacy = loadDay(new Date().toISOString().slice(0, 10));
@@ -3973,7 +4345,7 @@ function dayDone(st) { return itemsCount(st) >= 8 && (st.water || 0) >= WATER_GO
 let overlayShown = false;
 
 function checkDate() {
-  const k = dayKey();
+  const k = todayKey();
   if (k !== currentDay && !overlayShown) {
     overlayShown = true;
     showSummary();
@@ -3999,7 +4371,7 @@ function showSummary() {
 function startNewDay() {
   overlayShown = false;
   document.getElementById("dayOverlay").classList.remove("show");
-  currentDay = dayKey();
+  currentDay = todayKey();
   state = loadDay(currentDay);
   render();
 }
@@ -4020,6 +4392,19 @@ function checkAuto() {
   checkDate();
   maybeAutoRoll();
   renderNow();
+  const np = nightPhase();
+  if (np !== lastNightPhase) {
+    /* сменились ночные сутки: смена → восстановление или обратно */
+    lastNightPhase = np;
+    currentDay = todayKey();
+    state = loadDay(currentDay);
+    render();
+    mdRender();
+    renderFoodNight();
+    renderTrainNight();
+  }
+  renderNight();
+  renderAttention();
   /* «сегодня» в тратах должно обновиться после полуночи */
   const spPage = document.getElementById("page-spend");
   if (spPage && spPage.style.display !== "none") spendRender();
@@ -4171,7 +4556,7 @@ function catEarned() {
 /* начисляем только прирост за день: снятая галочка не отнимает рыбок,
    но и не даёт заработать их заново */
 function catTick() {
-  const k = dayKey();
+  const k = todayKey();
   const earned = catEarned();
   const prev = cat.days[k] || 0;
   if (earned > prev) {
@@ -4217,7 +4602,7 @@ function renderCat() {
     ? Math.min(100, cur / span * 100) + "%"
     : "100%";
   document.getElementById("catXp").textContent = next ? cur + " / " + span : "макс.";
-  document.getElementById("catToday").textContent = "+" + (cat.days[dayKey()] || 0) + " сегодня";
+  document.getElementById("catToday").textContent = "+" + (cat.days[todayKey()] || 0) + " сегодня";
   document.getElementById("catSpeech").textContent = catSpeech(mood);
   catFlash = false;
 }
@@ -4275,7 +4660,7 @@ function ruPlural(n, one, few, many) {
 /* текущая серия: сегодня, а если день ещё не закрыт — со вчера */
 function currentStreak() {
   let n = 0;
-  const d = new Date();
+  const d = s2d(todayKey());
   if (!dayDone(loadDay(dayKey(d)))) d.setDate(d.getDate() - 1);
   for (let i = 0; i < 366; i++) {
     if (!dayDone(loadDay(dayKey(d)))) break;
@@ -4329,8 +4714,11 @@ function celebrate() {
 }
 
 function render() {
-  document.getElementById("today").textContent =
-    new Date().toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" });
+  let dstr = s2d(currentDay).toLocaleDateString("ru-RU", { weekday: "long", day: "numeric", month: "long" });
+  const np = nightPhase();
+  if (np === "shift") dstr += " · ночная смена";
+  else if (np === "after") dstr += " · после смены";
+  document.getElementById("today").textContent = dstr;
   const list = document.getElementById("list");
   list.innerHTML = "";
   const gentle = isGentle();
@@ -4387,24 +4775,48 @@ function render() {
   renderSteps();
   renderNow();
   renderGentle();
+  renderNight();
 }
 
 /* ===== «сейчас»: подсветка текущего дела по времени ===== */
 const GENTLE_IDX = 6; /* «🏋️ 15:00–16:00 — Тренировка» */
 
 function itemTime(i) {
-  const m = String(ITEMS[i].t).match(/(\d{1,2}):(\d{2})/);
-  return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  return itemTimes()[i];
+}
+
+/* минуты от полуночи «логических суток»: смена и восстановление
+   могут переходить через полночь, поэтому считаем смещения от старта */
+function itemTimes() {
+  const p = nightPhase();
+  if (!NIGHT || p === "off") {
+    return nightSchedule().map(it => {
+      const m = String(it.t).match(/(\d{1,2}):(\d{2})/);
+      return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+    });
+  }
+  const s = new Date(NIGHT.shiftStart);
+  const w = new Date(NIGHT.wakeAt);
+  const sMin = s.getHours() * 60 + s.getMinutes();
+  const wMin = w.getHours() * 60 + w.getMinutes();
+  const dur = Math.max(60, Math.round((NIGHT.shiftEnd - NIGHT.shiftStart) / 60000));
+  const offs = p === "shift"
+    ? [-240, -210, -195, -180, -60, -30, Math.round(dur * .4), Math.round(dur * .7), dur + 30, dur + 60, null, dur + 510]
+    : [30, 45, 60, 90, 240, 300, 360, 420, 480, 510, null, 540];
+  const base = p === "shift" ? sMin : wMin;
+  return offs.map(o => o == null ? null : base + o);
 }
 
 function itemFor(i, gentle) {
-  if (gentle && i === GENTLE_IDX) {
+  const base = nightSchedule()[i];
+  /* в ночном режиме тренировка уже заменена на лёгкую/восстановление */
+  if (gentle && i === GENTLE_IDX && nightPhase() === "off") {
     return {
       t: "🧘 Щадящий день — зарядка + прогулка",
       d: "1–2-й день месячных: силовую и интервалы отменяем"
     };
   }
-  return ITEMS[i];
+  return base;
 }
 
 /* название без времени — оно уже показано рядом */
@@ -4417,13 +4829,23 @@ function itemTitle(i, gentle) {
 }
 
 function fmtTime(mins) {
+  mins = ((Math.round(mins) % 1440) + 1440) % 1440;
   return String(Math.floor(mins / 60)).padStart(2, "0") + ":" + String(mins % 60).padStart(2, "0");
 }
 
 function nowInfo() {
   const d = new Date();
-  const mins = d.getHours() * 60 + d.getMinutes();
-  const timed = ITEMS.map((_, i) => ({ i, t: itemTime(i) })).filter(x => x.t != null);
+  let mins = d.getHours() * 60 + d.getMinutes();
+  const p = nightPhase();
+  if (NIGHT && p !== "off") {
+    const logical = p === "shift" ? NIGHT.start : addDaysKey(NIGHT.start, 1);
+    if (dayKey(d) !== logical) mins += 1440;
+  }
+  /* после смены — время сна, а не «опоздавшие дела» */
+  if (NIGHT && p === "shift" && Date.now() >= NIGHT.shiftEnd && Date.now() < NIGHT.wakeAt) {
+    return { idx: 11, mode: "now", at: 0, sleep: true };
+  }
+  const timed = nightSchedule().map((_, i) => ({ i, t: itemTime(i) })).filter(x => x.t != null);
   const pending = timed.filter(x => !state["i" + x.i]);
   let last = null, next = null;
   pending.forEach(x => {
@@ -4440,12 +4862,21 @@ function renderNow() {
   const bar = document.getElementById("nowBar");
   if (!bar) return;
   const d = new Date();
-  const mins = d.getHours() * 60 + d.getMinutes();
+  const rawMins = d.getHours() * 60 + d.getMinutes();
+  let mins = rawMins;
+  const np = nightPhase();
+  if (NIGHT && np !== "off") {
+    const logical = np === "shift" ? NIGHT.start : addDaysKey(NIGHT.start, 1);
+    if (dayKey(d) !== logical) mins += 1440;
+  }
   const info = nowInfo();
   const gentle = isGentle();
-  const clock = fmtTime(mins);
+  const clock = fmtTime(rawMins);
   let html = `<span class="nclock">${clock}</span>`;
-  if (info.mode === "now") {
+  if (info.sleep) {
+    html += `<span><span class="nlbl">Сейчас</span><br><b>Сон после смены 😴</b></span>` +
+      `<span class="nrest">новые сутки в ${hmAt(NIGHT.wakeAt)}</span>`;
+  } else if (info.mode === "now") {
     html += `<span><span class="nlbl">Сейчас</span><br><b>${itemTitle(info.idx, gentle)}</b></span>` +
       `<span class="nrest">по плану в ${fmtTime(info.at)}</span>`;
   } else if (info.mode === "next") {
@@ -4468,7 +4899,7 @@ function renderNow() {
 /* ===== 🌸 щадящий режим на 1–2-й день месячных ===== */
 function periodInfo() {
   cyclesCache = buildCycles();
-  const t = dayKey();
+  const t = todayKey();
   for (const c of cyclesCache) {
     if (!c.predicted && t >= c.start && t <= c.periodEnd) {
       return { active: true, day: daysBetween(c.start, t) + 1, start: c.start };
@@ -4516,6 +4947,237 @@ function renderGentle() {
   }
   bar.className = "gentlebar" + (on ? " on" : "");
   bar.innerHTML = `<span>${text}</span><button class="minibtn" onclick="toggleGentle()">${btn}</button>`;
+}
+
+/* ===== 🌙 ночная смена: кнопка, план на два дня и подсказки ===== */
+function fmtClock(ts) {
+  return new Date(ts).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+}
+
+function nightBtnUpdate() {
+  const btn = document.getElementById("nightBtn");
+  const txt = document.getElementById("nightBtnText");
+  if (!btn || !txt) return;
+  const p = nightPhase();
+  btn.classList.toggle("on", p !== "off");
+  txt.textContent = p === "off" ? "Ночная смена" : p === "shift" ? "Смена идёт" : "После смены";
+  btn.title = p === "off"
+    ? "Включить ночную смену и подстроить планы"
+    : "Смена " + NIGHT.startHM + "–" + NIGHT.endHM + ". Нажмите, чтобы изменить или выключить.";
+}
+
+function nightShiftRows() {
+  const s = NIGHT.shiftStart, e = NIGHT.shiftEnd;
+  const dur = Math.max(60, Math.round((e - s) / 60000));
+  return [
+    { t: hmOffset(s, -240), b: "Взвешивание", d: "после сна, до еды и воды" },
+    { t: hmOffset(s, -210), b: "Зарядка 10 мин", d: "стоя, без прыжков — разбудить тело" },
+    { t: hmOffset(s, -180), b: "Завтрак", d: "белок + крупа + овощи" },
+    { t: hmOffset(s, -60), b: "Перекус перед сменой", d: "творог/йогурт или яйца, без кофеина" },
+    { t: hmOffset(s, -30), b: "Прогулка 10–15 мин", d: "свежий воздух перед сменой" },
+    { t: hmAt(s), b: "Начало смены", d: "вода рядом, белок в каждый приём" },
+    { t: hmOffset(s, Math.round(dur * .4)), b: "Обед на смене", d: "белок + гарнир + овощи, не переедать" },
+    { t: hmOffset(s, Math.round(dur * .7)), b: "Перекус в смене", d: "белок + сложный углевод, не сладкое" },
+    { t: hmAt(e), b: "Конец смены", d: "кофеин — не позже этого времени" },
+    { t: hmOffset(e, 30), b: "Лёгкий ужин", d: "белок + овощи, без тяжёлого" },
+    { t: hmOffset(e, 60), b: "10 мин на воздухе", d: "спокойно, перед сном" },
+    { t: hmAt(NIGHT.wakeAt), b: "Подъём после сна", d: "7–8 часов: шторы, тишина, телефон в сторону" }
+  ];
+}
+
+function nightAfterRows() {
+  const w = NIGHT.wakeAt;
+  return [
+    { t: hmAt(w), b: "Подъём", d: "7–8 часов сна после смены" },
+    { t: hmOffset(w, 30), b: "Взвешивание", d: "до еды и воды" },
+    { t: hmOffset(w, 45), b: "Зарядка 10 мин", d: "мягко, сон ещё в мышцах" },
+    { t: hmOffset(w, 90), b: "Завтрак", d: "белок + крупа, свет и вода" },
+    { t: hmOffset(w, 240), b: "Перекус 1", d: "йогурт/творог или фрукт" },
+    { t: hmOffset(w, 300), b: "Обед", d: "белок + гарнир + салат" },
+    { t: hmOffset(w, 360), b: "Прогулка 15–20 мин", d: "дневной свет возвращает ритм" },
+    { t: hmOffset(w, 420), b: "Перекус 2", d: "творог или яйца" },
+    { t: hmOffset(w, 480), b: "Ужин", d: "лёгкий: белок + овощи" },
+    { t: hmOffset(w, 510), b: "Спокойный вечер", d: "без экрана и кофеина" },
+    { t: hmOffset(w, 540), b: "Сон", d: "в обычное время, чтобы вернуть ритм" }
+  ];
+}
+
+function nightNormalRows() {
+  return [
+    { t: "08:00", b: "Взвешивание", d: "после туалета, до еды и воды" },
+    { t: "08:30", b: "Зарядка 10 мин", d: "стоя, без прыжков" },
+    { t: "09:00", b: "Завтрак", d: "по плану питания" },
+    { t: "11:00", b: "Перекус 1", d: "по плану питания" },
+    { t: "13:00", b: "Обед", d: "белок + гарнир + салат" },
+    { t: "15:00", b: "Тренировка", d: "по дню недели" },
+    { t: "17:00", b: "Перекус 2", d: "восстановление после тренировки" },
+    { t: "19:30", b: "Ужин", d: "белок + овощи" },
+    { t: "23:30", b: "Сон", d: "до 00:00, чтобы держать ритм" }
+  ];
+}
+
+function nightRowHtml(r) {
+  return `<div class="night-row"><div class="night-time">${r.t}</div>` +
+    `<div class="night-txt"><b>${r.b}</b><small>${r.d}</small></div></div>`;
+}
+function nightColHtml(cls, title, rows) {
+  return `<div class="nplan-col ${cls}"><b>${title}</b>` + rows.map(nightRowHtml).join("") + `</div>`;
+}
+
+function renderNight() {
+  nightBtnUpdate();
+  const bar = document.getElementById("nightBar");
+  if (!bar) return;
+  const p = nightPhase();
+  if (p === "off") {
+    bar.className = "nightbar";
+    bar.innerHTML = `<span>🌙 Работаете ночью? Включите смену — дела, еда, тренировки и подсказки на сегодня и завтра перестроятся под неё.</span>` +
+      `<button class="minibtn" onclick="nightAction()">Включить ночную смену</button>`;
+  } else if (p === "shift") {
+    bar.className = "nightbar on";
+    bar.innerHTML = `<span>🌙 <b>Ночная смена ${NIGHT.startHM}–${NIGHT.endHM}</b> · новые сутки после сна, в ${hmAt(NIGHT.wakeAt)}.</span>` +
+      `<button class="minibtn" onclick="openNight()">Изменить</button>` +
+      `<button class="minibtn" onclick="nightDisable()">Выключить</button>`;
+  } else {
+    bar.className = "nightbar after";
+    const roll = currentDay !== todayKey();
+    bar.innerHTML = `<span>☀️ <b>День после смены</b> · восстановление, сон был до ${hmAt(NIGHT.wakeAt)}. Силовую заменили на лёгкую.</span>` +
+      (roll ? `<button class="minibtn" onclick="startNewDay()">Открыть новый день</button>` : "") +
+      `<button class="minibtn" onclick="nightDisable()">Вернуть обычный график</button>`;
+  }
+  renderNightPlan(p);
+}
+
+function renderNightPlan(p) {
+  const box = document.getElementById("nightPlan");
+  if (!box) return;
+  if (p === "off" || !NIGHT) { box.className = "nplan"; box.innerHTML = ""; return; }
+
+  const w = waterOf(state), done = itemsCount(state);
+  let todayTitle, tomorrowTitle, todayRows, tomorrowRows, note;
+  if (p === "shift") {
+    todayTitle = "Сегодня · ночная смена";
+    tomorrowTitle = "Завтра · после смены";
+    todayRows = nightShiftRows();
+    tomorrowRows = nightAfterRows();
+    note = `Вода: ${w}/8 · дела: ${done}/12. Кофеин — только в первой половине смены, вода — до ${hmOffset(NIGHT.shiftEnd, -120)}. После смены сразу спать, без экрана.`;
+  } else {
+    todayTitle = "Сегодня · восстановление";
+    tomorrowTitle = "Завтра · обычный ритм";
+    todayRows = nightAfterRows();
+    tomorrowRows = nightNormalRows();
+    note = `Вода: ${w}/8 · дела: ${done}/12. Сегодня без силовой: зарядка, растяжка и прогулка на свету. Если завтра снова смена — нажмите «Ночная смена» и укажите новое время.`;
+  }
+  box.className = "nplan on";
+  box.innerHTML = `<h3>🌙 План на два дня</h3><div class="nplan-grid">` +
+    nightColHtml("today", todayTitle, todayRows) +
+    nightColHtml("tomorrow", tomorrowTitle, tomorrowRows) +
+    `</div><p class="nplan-note">${note}</p>`;
+}
+
+/* карточка ночного режима на вкладке «Мой день» */
+function nightSegHtml(title, rows) {
+  return `<div class="night-seg"><h3>${title}</h3>` + rows.map(nightRowHtml).join("") + `</div>`;
+}
+function renderMdNight() {
+  const el = document.getElementById("mdNight");
+  if (!el) return;
+  const p = nightPhase();
+  if (!NIGHT || p === "off") { el.style.display = "none"; el.innerHTML = ""; return; }
+  el.style.display = "";
+  const rows = p === "shift" ? nightShiftRows() : nightAfterRows();
+  const nextRows = p === "shift" ? nightAfterRows() : nightNormalRows();
+  el.innerHTML =
+    `<h2>🌙 Ночная смена <span class="nightchip">${NIGHT.startHM}–${NIGHT.endHM}</span></h2>` +
+    `<p class="muted">${p === "shift"
+      ? "Сегодня смена: еда, вода и сон подстроены под неё. Силовую переносим — в день смены только зарядка и прогулка."
+      : "Сегодня восстановление после смены: без силовой, больше сна, еды и дневного света."}</p>` +
+    `<div class="night-grid">` + nightSegHtml("Сегодня", rows) + nightSegHtml("Завтра", nextRows) + `</div>` +
+    `<div class="night-actions">` +
+      `<button class="databtn" onclick="openNight()">Изменить смену</button>` +
+      `<button class="databtn" onclick="nightDisable()">Выключить</button>` +
+    `</div>` +
+    `<p class="note">Новые сутки начинаются после сна, в ${hmAt(NIGHT.wakeAt)} — чеклист не обнулится посреди смены.</p>`;
+}
+
+/* ===== 🌙 питание в ночном режиме ===== */
+function nightFoodRows() {
+  const p = nightPhase();
+  if (!NIGHT || p === "off") return [];
+  if (p === "shift") {
+    const s = NIGHT.shiftStart, e = NIGHT.shiftEnd;
+    const dur = Math.max(60, Math.round((e - s) / 60000));
+    return [
+      [hmOffset(s, -180), "☕ Завтрак", "белок + крупа + овощи, стакан воды до еды"],
+      [hmOffset(s, -60), "🍎 Перекус перед сменой", "творог/йогурт или яйца — без кофеина"],
+      [hmAt(s), "🥤 Начало смены", "вода 0,5 л рядом; кофеин — только в первую половину"],
+      [hmOffset(s, Math.round(dur * .4)), "🍲 Обед на смене", "белок + гарнир + овощи, самый большой приём"],
+      [hmOffset(s, Math.round(dur * .7)), "🍐 Перекус в смене", "белок + сложный углевод, не сладкое"],
+      [hmOffset(e, 30), "🥗 Лёгкий ужин после смены", "белок + овощи, без тяжёлого"],
+      [hmAt(NIGHT.wakeAt), "😴 Сон", "последний кофеин — минимум за 6 часов до сна"]
+    ];
+  }
+  const w = NIGHT.wakeAt;
+  return [
+    [hmAt(w), "☕ Завтрак", "белок + крупа, сразу после подъёма"],
+    [hmOffset(w, 240), "🍎 Перекус 1", "йогурт/творог или фрукт"],
+    [hmOffset(w, 300), "🍲 Обед", "белок + гарнир + овощи"],
+    [hmOffset(w, 420), "🍐 Перекус 2", "творог или яйца"],
+    [hmOffset(w, 480), "🥗 Ужин", "белок + овощи, лёгкий"],
+    [hmOffset(w, 540), "😴 Сон", "в обычное время, чтобы вернуть ритм"]
+  ];
+}
+
+function renderFoodNight() {
+  const el = document.getElementById("foodNight");
+  const card = document.getElementById("mealCard");
+  if (!el) return;
+  const p = nightPhase();
+  if (!NIGHT || p === "off") {
+    el.style.display = "none"; el.innerHTML = "";
+    if (card) card.style.display = "";
+    return;
+  }
+  el.style.display = "";
+  if (card) card.style.display = "none";
+  const rows = nightFoodRows();
+  el.innerHTML =
+    `<div class="card nightcard"><h2>🌙 Питание в ночную смену <span class="nightchip">${NIGHT.startHM}–${NIGHT.endHM}</span></h2>` +
+    `<p>${p === "shift"
+      ? "Смену вытягивает не кофе, а ровный белок и вода. Плотно едим до смены, ночью — легче, после смены — белок и сон."
+      : "После смены важнее восстановить ритм: еда каждые 3–4 часа, белок в каждый приём, вечером — без кофеина."}</p>` +
+    `<table><tr><th>Приём</th><th>Время</th><th>Что</th></tr>` +
+    rows.map(r => `<tr><td>${r[1]}</td><td><b>${r[0]}</b></td><td>${r[2]}</td></tr>`).join("") +
+    `</table>` +
+    `<p class="note">Вода: 2–2,2 л за сутки. Кофеин — только в первой половине смены. Сладкое ночью не «бодрит», а роняет сахар и тянет на ещё.</p></div>`;
+}
+
+/* ===== 🌙 тренировки в ночном режиме ===== */
+function renderTrainNight() {
+  const el = document.getElementById("trainNight");
+  if (!el) return;
+  const p = nightPhase();
+  if (!NIGHT || p === "off") { el.style.display = "none"; el.innerHTML = ""; return; }
+  el.style.display = "";
+  const s = NIGHT.shiftStart, w = NIGHT.wakeAt;
+  const rows = p === "shift" ? [
+    [hmOffset(s, -210), "Зарядка 10 мин", "стоя, без прыжков — разбудить тело"],
+    [hmOffset(s, -195), "Растяжка 5–10 мин", "шея, плечи, спина, ноги"],
+    [hmOffset(s, -30), "Прогулка 10–15 мин", "перед сменой, спокойный темп"]
+  ] : [
+    [hmOffset(w, 45), "Зарядка 10 мин", "мягко, без прыжков"],
+    [hmOffset(w, 60), "Растяжка 10–15 мин", "всё тело, дыхание"],
+    [hmOffset(w, 360), "Прогулка 15–20 мин", "на свету — вернуть ритм"]
+  ];
+  el.innerHTML =
+    `<div class="card nightcard"><h2>🌙 Тренировки в ночном режиме <span class="nightchip">${p === "shift" ? "день смены" : "после смены"}</span></h2>` +
+    `<p>${p === "shift"
+      ? "В день смены силовую не делаем: она забирает силы, которые нужны ночью. Только зарядка и прогулка до смены."
+      : "После смены — восстановление, а не подвиг. Растяжка и прогулка на свету; силовая вернётся в обычный день."}</p>` +
+    `<table><tr><th>Что</th><th>Время</th><th>Как</th></tr>` +
+    rows.map(r => `<tr><td>${r[1]}</td><td><b>${r[0]}</b></td><td>${r[2]}</td></tr>`).join("") +
+    `</table>` +
+    `<p class="note">Пропущенная силовая из-за смены — не прогул: на следующем обычном дне идёте по плану, ничего не догоняете двойным объёмом.</p></div>`;
 }
 
 /* ===== 👣 шаги ===== */
@@ -4586,7 +5248,7 @@ const ATT_KEY = "fitcheck:attn-off";
 function attnOffList() {
   try {
     const o = JSON.parse(localStorage.getItem(ATT_KEY) || "{}");
-    if (o && o.d === dayKey() && Array.isArray(o.ids)) return o.ids;
+    if (o && o.d === todayKey() && Array.isArray(o.ids)) return o.ids;
   } catch (e) {}
   return [];
 }
@@ -4594,7 +5256,7 @@ function attnOffList() {
 function attnDismiss(id) {
   const list = attnOffList();
   if (!list.includes(id)) list.push(id);
-  localStorage.setItem(ATT_KEY, JSON.stringify({ d: dayKey(), ids: list }));
+  localStorage.setItem(ATT_KEY, JSON.stringify({ d: todayKey(), ids: list }));
   renderAttention();
 }
 
@@ -4608,9 +5270,16 @@ function attnGo(t) {
 /* собираем только то, что правда требует действия сегодня */
 function attentionItems() {
   const out = [];
-  const today = dayKey();
+  const today = todayKey();
   const now = new Date();
   const hour = now.getHours();
+  const phase = nightPhase();
+  /* в ночной смене «вечер» считается от начала смены/подъёма, а не от полуночи */
+  const elapsed = phase === "shift" ? (Date.now() - NIGHT.ts) / 3600000
+    : phase === "after" ? (Date.now() - NIGHT.shiftEnd) / 3600000 : hour;
+  const waterDue = phase === "off" ? hour >= 15 : elapsed >= 3;
+  const checkDue = phase === "off" ? hour >= 20 : elapsed >= 8;
+  const diaryDue = phase === "off" ? hour >= 20 : elapsed >= 10;
   const add = (id, ico, html, go, prio) => out.push({ id, ico, html, go, prio });
 
   /* деньги: перерасход или мало до конца месяца */
@@ -4685,12 +5354,12 @@ function attentionItems() {
   const yEnt = loadDay(addDays(today, -1));
   const engaged = done > 0 || water > 0 || itemsCount(yEnt) > 0 || waterOf(yEnt) > 0 ||
     Object.keys(localStorage).some(k => /^fitcheck:\d{4}-\d{2}-\d{2}$/.test(k));
-  if (engaged && hour >= 15 && water < 5) {
+  if (engaged && waterDue && water < 5) {
     add("water", "💧",
-      `Воды сегодня <b>${water} из 8</b>. До вечера ещё можно догнать.`,
+      `Воды сегодня <b>${water} из 8</b>. Ещё можно догнать.`,
       "c", 4);
   }
-  if (engaged && hour >= 20 && done < 8) {
+  if (engaged && checkDue && done < 8) {
     add("check", "✅",
       `Сделано <b>${done} из ${ITEMS.length}</b> дел. Осталось ${ITEMS.length - done} — есть ещё время.`,
       "c", 5);
@@ -4698,8 +5367,13 @@ function attentionItems() {
 
   /* дневник: вечером пусто */
   const dEnt = diary[today] || {};
-  if (engaged && hour >= 20 && !dEnt.e && !dEnt.m && !String(dEnt.n || "").trim()) {
+  if (engaged && diaryDue && !dEnt.e && !dEnt.m && !String(dEnt.n || "").trim()) {
     add("diary", "📝", "Дневник за сегодня пуст. Пара строк — и картина недели будет честной.", "d", 6);
+  }
+
+  /* ночью мягко напоминаем про кнопку, если режим ещё не включён */
+  if (phase === "off" && (hour >= 22 || hour < 6)) {
+    add("night", "🌙", "Ночная смена? Кнопка в чеклисте сдвинет дела и покажет подсказки на завтра.", "c", 2.5);
   }
 
   return out;
@@ -6012,6 +6686,8 @@ function ckOnShow() {
 
 renderMeme();
 render();
+renderFoodNight();
+renderTrainNight();
 
 /* ================== ТРАТЫ ================== */
 const SP_CATS = [
