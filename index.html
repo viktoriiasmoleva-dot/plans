@@ -159,7 +159,7 @@
   }
   .night-form input:focus { outline: none; border-color: var(--acc); }
   @media (max-width: 430px) { .night-form { grid-template-columns: 1fr; } }
-  .nightcard {
+  .card.nightcard {
     background: linear-gradient(160deg, #18213d 0%, #1a1f33 60%, #201b2e 100%);
     border-color: #3a4a7a;
   }
@@ -1795,8 +1795,9 @@
       <button class="reset" onclick="resetDay()">🔄 Сбросить день (если отметила случайно)</button>
 
       <div class="note">
-        Галочки автоматически сохраняются в этом браузере. В полночь (по вашим часам) появится
-        итоговая карточка дня — нажмите «Начать новый день», и чеклист обнулится сам.<br>
+        Галочки автоматически сохраняются в этом браузере. В полночь чеклист сам переходит
+        на новые сутки, а итоговая карточка показывает прошедший день.
+        В ночной смене сутки меняются после сна, а не в полночь.<br>
         День в серии засчитывается при ≥ 8 дел и ≥ 6 стаканов воды.<br><br>
         🏋️ Тренировка по дням недели: Пн/Сб — силовая A, Вт — кардио+живот, Ср — ходьба 60 мин,
         Чт — силовая B, Пт — интервалы, Вс — прогулка.
@@ -2062,8 +2063,8 @@
         <div class="row"><b id="sumWater">0/8</b><span>стаканы воды</span></div>
       </div>
       <div class="verdict" id="sumVerdict"></div>
-      <button class="nextbtn" onclick="startNewDay()">✨ Начать новый день</button>
-      <button class="later" onclick="closeOverlay()">Позже — ещё поставлю галочки вчерашнему дню</button>
+      <button class="nextbtn" onclick="startNewDay()">✨ К новому дню</button>
+      <button class="later" onclick="closeOverlay()">Закрыть</button>
     </div>
   </div>
 
@@ -2097,7 +2098,7 @@
         <p><b class="ok">🍬 Сахзам — можно (в напитках):</b> эритрит, стевия, сукралоза — в кофе, чай, какао, цикорий, каждый день ок (бытовые количества безопасны; эритрит больше 30–40 г/день может слабить). Мёд в блюдах остаётся по меню.</p>
         <p><b class="warn">⚠️ С ограничением:</b> кофе с молоком (~100–150 ккал — тогда минус 1 перекус); кефир/ряжанка/питьевой йогурт без сахара как еда (до 500 мл кефира/день); диет-газировка ≤1 банки/день; протеиновый коктейль = приём пищи, не «сверх»; какао на воде с подсластителем изредка.</p>
         <p><b class="warn">⛔ Стоп:</b> соки любые (фрукт целиком лучше), сладкая газировка и лимонады, энергетики, рафы/фраппе (300–500 ккал), алкоголь вне свободного ужина (там — сухое вино/брют ≤2 бокалов, стакан воды между). Изотоники не нужны на 50-минутных тренировках.</p>
-        <p>☕ Кофеин и сон в 00:00: последний кофе/чёрный чай — до ~16:00. После тренировки — вода или травяной чай.</p>
+        <p>☕ Кофеин и сон: последний кофе/чёрный чай — минимум за 6 часов до сна (в обычном режиме это ~16:00). После тренировки — вода или травяной чай.</p>
       </div>
 
       <div class="card" id="mealCard">
@@ -2385,7 +2386,7 @@
       <div class="card">
         <h2>🏋️ Исходные данные</h2>
         <p>25 лет, 165 см, 89 кг → цель ~70–75 кг, ускоренный темп.</p>
-        <p><b>Расписание:</b> Пн — силовая A, Вт — кардио + живот, Ср — ходьба, Чт — силовая B, Пт — кардио-интервалы, Сб — силовая A, Вс — отдых + прогулка.</p>
+        <p><b>Расписание:</b> Пн — силовая A, Вт — кардио + живот, Ср — ходьба, Чт — силовая B, Пт — кардио-интервалы, Сб — силовая A, Вс — отдых + прогулка. В ночную смену расписание заменяется карточкой сверху.</p>
         <p><b>Инвентарь:</b> гантели (несколько пар), коврик, стул/скамья.</p>
         <blockquote>
           <p>⚡ Ускорение — это 6 дней активности + 10–12 тыс. шагов ежедневно, а не «больше пота».</p>
@@ -4097,7 +4098,6 @@ function dayKey(d = new Date()) {
    начало и конец смены. Пока режим активен, «сутки» меняются после сна,
    а чеклист, питание и тренировки перестраиваются на смену и следующий день. */
 const NIGHT_KEY = "fitcheck:night";
-const NIGHT_BOUNDARY = 15; /* запасной ориентир для старых записей */
 const NIGHT_WAKE_MIN = 8 * 60 + 30; /* от конца смены до подъёма: еда + сон */
 const NIGHT_DEFAULT_START = "20:00";
 const NIGHT_DEFAULT_END = "08:00";
@@ -4287,9 +4287,14 @@ function openNight() {
   if (!modal) return;
   const s = (NIGHT && NIGHT.startHM) || NIGHT_DEFAULT_START;
   const e = (NIGHT && NIGHT.endHM) || NIGHT_DEFAULT_END;
+  const dateInput = document.getElementById("nightDate");
+  const minD = new Date();
+  minD.setDate(minD.getDate() - 1);
+  dateInput.min = dayKey(minD);
+  dateInput.max = dayKey(new Date());
   document.getElementById("nightStart").value = s;
   document.getElementById("nightEnd").value = e;
-  document.getElementById("nightDate").value = (NIGHT && NIGHT.start) || defaultNightDate(s, e);
+  dateInput.value = (NIGHT && NIGHT.start) || defaultNightDate(s, e);
   document.getElementById("nightModalState").textContent = NIGHT ? "· включена" : "";
   document.getElementById("nightEnableBtn").textContent = NIGHT ? "Обновить" : "Включить";
   document.getElementById("nightOffBtn").style.display = NIGHT ? "" : "none";
@@ -4311,6 +4316,10 @@ function nightApply() {
     hint.textContent = "Проверьте дату и время: начало и конец не должны совпадать.";
     return;
   }
+  if (date > dayKey(new Date())) {
+    hint.textContent = "Дата не может быть в будущем: включайте смену в день, когда выходите (или накануне поздно вечером).";
+    return;
+  }
   if (!nightEnable(date, s, e)) {
     hint.textContent = "Не получилось включить. Проверьте время.";
     return;
@@ -4318,24 +4327,10 @@ function nightApply() {
   closeNight();
 }
 
-function mergeDay(a, b) {
-  const out = Object.assign({}, a || {});
-  for (let i = 0; i < ITEMS.length; i++) {
-    const k = "i" + i;
-    out[k] = !!(out[k] || b[k]);
-  }
-  out.water = Math.max(out.water || 0, b.water || 0);
-  return out;
-}
-
 let currentDay = todayKey();
 let state = loadDay(currentDay);
-/* перенос отметок из старого формата, если они были (большие даты по UTC) */
-const legacy = loadDay(new Date().toISOString().slice(0, 10));
-if (Object.keys(legacy).length) {
-  state = mergeDay(state, legacy);
-  saveDay(currentDay, state);
-}
+/* Старый перенос отметок по UTC-дате убран: с 00:00 до 03:00 по Москве
+   UTC-дата ещё вчерашняя, и вчерашние галочки каждый раз вливались в новый день. */
 
 function itemsCount(st) { return ITEMS.filter((_, i) => st["i" + i]).length; }
 function waterOf(st) { return Math.min(st.water || 0, WATER_TOTAL); }
@@ -4348,13 +4343,17 @@ function checkDate() {
   const k = todayKey();
   if (k !== currentDay && !overlayShown) {
     overlayShown = true;
-    showSummary();
+    showSummary();          /* итог за прошедший день */
+    currentDay = k;         /* сразу новые сутки: галочки сбрасываются */
+    state = loadDay(k);
+    catRepairDay(k);        /* убрать рыбки, начисленные по вчерашнему состоянию */
+    render();
   }
 }
 
 function showSummary() {
   document.getElementById("sumDate").textContent =
-    new Date(currentDay).toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "long" });
+    s2d(currentDay).toLocaleDateString("ru-RU", { day: "numeric", month: "long", weekday: "long" });
   document.getElementById("sumItems").textContent = itemsCount(state) + "/" + ITEMS.length;
   document.getElementById("sumWater").textContent = (state.water || 0) + "/8";
   const v = document.getElementById("sumVerdict");
@@ -4373,12 +4372,20 @@ function startNewDay() {
   document.getElementById("dayOverlay").classList.remove("show");
   currentDay = todayKey();
   state = loadDay(currentDay);
+  catRepairDay(currentDay);
   render();
 }
 
 function closeOverlay() {
-  /* «Позже»: карточку больше не показываем, день остаётся вчерашним */
+  /* «Закрыть»: новые сутки уже начались, просто убираем итоговую карточку */
+  overlayShown = false;
   document.getElementById("dayOverlay").classList.remove("show");
+  const k = todayKey();
+  if (k !== currentDay) {
+    currentDay = k;
+    state = loadDay(k);
+    catRepairDay(k);
+  }
   render();
 }
 
@@ -4396,9 +4403,14 @@ function checkAuto() {
   if (np !== lastNightPhase) {
     /* сменились ночные сутки: смена → восстановление или обратно */
     lastNightPhase = np;
-    currentDay = todayKey();
-    state = loadDay(currentDay);
-    render();
+    if (!overlayShown) {
+      currentDay = todayKey();
+      state = loadDay(currentDay);
+      render();
+    } else {
+      /* пользователь ещё не закрыл итог прошлого дня — не перескакиваем сами */
+      renderNight();
+    }
     mdRender();
     renderFoodNight();
     renderTrainNight();
@@ -4494,7 +4506,7 @@ function catLoad() {
   /* первый запуск: кот «помнит» последний месяц, но не выше 3-го уровня */
   if (first) {
     c.xp = catSeed();
-    c.days[dayKey()] = 0;
+    c.days[currentDay] = 0;
     try { localStorage.setItem(CAT_KEY, JSON.stringify(c)); } catch (e) {}
   }
   return c;
@@ -4502,7 +4514,7 @@ function catLoad() {
 
 function catSeed() {
   let xp = 0;
-  const d = new Date();
+  const d = s2d(todayKey());
   d.setDate(d.getDate() - 1);
   for (let i = 0; i < 30; i++) {
     const st = loadDay(dayKey(d));
@@ -4527,6 +4539,24 @@ let catPatUntil = 0;
 function catSave() {
   try { localStorage.setItem(CAT_KEY, JSON.stringify(cat)); } catch (e) {}
 }
+
+/* Если за день ещё нет ни одного дела/воды, а рыбки уже начислены —
+   это след старого полуночного сбоя. Убираем запись, чтобы новые
+   отметки снова давали рыбок. */
+function catRepairDay(k) {
+  const v = cat.days[k];
+  if (!v) return;
+  const st = loadDay(k);
+  const empty = itemsCount(st) === 0 && (st.water || 0) === 0 &&
+                (Number(st.steps) || 0) < 10000;
+  if (empty) {
+    cat.xp = Math.max(0, cat.xp - v);
+    delete cat.days[k];
+    catSave();
+  }
+}
+
+catRepairDay(currentDay);
 
 function catLevel(xp) {
   let idx = 0;
@@ -4556,7 +4586,7 @@ function catEarned() {
 /* начисляем только прирост за день: снятая галочка не отнимает рыбок,
    но и не даёт заработать их заново */
 function catTick() {
-  const k = todayKey();
+  const k = currentDay;
   const earned = catEarned();
   const prev = cat.days[k] || 0;
   if (earned > prev) {
@@ -4602,7 +4632,7 @@ function renderCat() {
     ? Math.min(100, cur / span * 100) + "%"
     : "100%";
   document.getElementById("catXp").textContent = next ? cur + " / " + span : "макс.";
-  document.getElementById("catToday").textContent = "+" + (cat.days[todayKey()] || 0) + " сегодня";
+  document.getElementById("catToday").textContent = "+" + (cat.days[currentDay] || 0) + " сегодня";
   document.getElementById("catSpeech").textContent = catSpeech(mood);
   catFlash = false;
 }
@@ -4950,10 +4980,6 @@ function renderGentle() {
 }
 
 /* ===== 🌙 ночная смена: кнопка, план на два дня и подсказки ===== */
-function fmtClock(ts) {
-  return new Date(ts).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
-}
-
 function nightBtnUpdate() {
   const btn = document.getElementById("nightBtn");
   const txt = document.getElementById("nightBtnText");
@@ -5119,7 +5145,7 @@ function nightFoodRows() {
   }
   const w = NIGHT.wakeAt;
   return [
-    [hmAt(w), "☕ Завтрак", "белок + крупа, сразу после подъёма"],
+    [hmOffset(w, 90), "☕ Завтрак", "белок + крупа, после зарядки и воды"],
     [hmOffset(w, 240), "🍎 Перекус 1", "йогурт/творог или фрукт"],
     [hmOffset(w, 300), "🍲 Обед", "белок + гарнир + овощи"],
     [hmOffset(w, 420), "🍐 Перекус 2", "творог или яйца"],
@@ -5210,8 +5236,17 @@ function setSteps() {
 }
 
 function resetDay() {
+  const k = currentDay;
+  /* сбрасываем и рыбок, заработанных за этот день, иначе новые отметки
+     не смогут их начислить заново */
+  const v = cat.days[k] || 0;
+  if (v) {
+    cat.xp = Math.max(0, cat.xp - v);
+    delete cat.days[k];
+    catSave();
+  }
   state = {};
-  saveDay(currentDay, state);
+  saveDay(k, state);
   render();
 }
 
