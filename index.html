@@ -381,62 +381,6 @@
   #page-check .nightbar.after .minibtn { background: #3a2a1c; border-color: #a4743f; color: #f2d9bd; }
   #page-check .item.next { background: #1b2a3a; box-shadow: inset 3px 0 0 var(--acc); }
   #page-check .item.next .label { color: #fff; }
-  /* подсказки «сегодня / завтра» в ночной смене */
-  #page-check .nplan { display: none; margin-bottom: 12px; }
-  #page-check .nplan.on { display: block; animation: pagein .3s ease; }
-  #page-check .nplan h3 {
-    font-size: 13px; color: var(--acc); margin-bottom: 8px;
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-  }
-  #page-check .nplan h3 .nightchip {
-    font-size: 10.5px; font-weight: 600; color: #dbe3ff;
-    background: #263257; border: 1px solid #4b63a8;
-    border-radius: 999px; padding: 2px 7px;
-  }
-  #page-check .nplan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
-  #page-check .nplan-col {
-    background: #141a2e; border: 1px solid #2d3760; border-radius: 12px;
-    padding: 9px 10px; min-width: 0;
-  }
-  #page-check .nplan-col.tomorrow { background: #1b1826; border-color: #4a3a63; }
-  #page-check .nplan-col > b { display: block; font-size: 12px; color: #fff; margin-bottom: 5px; }
-  #page-check .np-line {
-    display: flex; align-items: baseline; gap: 7px;
-    padding: 3.5px 0; min-width: 0;
-  }
-  #page-check .np-line + .np-line { border-top: 1px solid rgba(255, 255, 255, .05); }
-  #page-check .np-line .t {
-    flex: 0 0 36px; font-size: 10.5px; font-weight: 700;
-    color: #9fb4ff; font-variant-numeric: tabular-nums;
-  }
-  #page-check .np-line .x {
-    flex: 1; min-width: 0; font-size: 11.5px; line-height: 1.35;
-    color: #d6d9ec; overflow-wrap: anywhere;
-  }
-  #page-check .np-more { margin-top: 6px; border-top: 1px dashed rgba(255, 255, 255, .1); padding-top: 5px; }
-  #page-check .np-more > summary {
-    font-size: 11px; color: #8f94ad; cursor: pointer;
-    list-style: none; padding: 1px 0; -webkit-tap-highlight-color: transparent;
-  }
-  #page-check .np-more > summary::-webkit-details-marker { display: none; }
-  #page-check .np-more > summary::before { content: "▸ "; color: var(--acc); }
-  #page-check .np-more[open] > summary::before { content: "▾ "; }
-  #page-check .np-more .night-row { padding: 4px 0; border-bottom-color: rgba(255, 255, 255, .05); }
-  #page-check .np-more .night-row:last-child { border-bottom: none; }
-  #page-check .np-more .night-time { flex-basis: 36px; font-size: 10.5px; }
-  #page-check .np-more .night-txt { font-size: 11px; line-height: 1.35; }
-  #page-check .np-more .night-txt b { font-size: 11px; }
-  #page-check .np-more .night-txt small { font-size: 10.5px; }
-  #page-check .nplan-note { display: flex; flex-wrap: wrap; gap: 5px 6px; align-items: center; margin-top: 9px; }
-  #page-check .np-stat {
-    font-size: 10.5px; font-weight: 600; color: #dbe3ff;
-    background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .09);
-    border-radius: 999px; padding: 2px 8px; white-space: nowrap;
-  }
-  #page-check .np-tip {
-    flex: 1 1 100%; font-size: 11.5px; line-height: 1.45; color: #a9aecb;
-  }
-  @media (max-width: 560px) { #page-check .nplan-grid { grid-template-columns: 1fr; } }
   /* шаги */
   #page-check .stepsbox {
     background: #1c2433; border: 1px solid #2c3a52; border-radius: 16px;
@@ -1681,7 +1625,6 @@
       <div class="date" id="today"></div>
       <div class="nowbar" id="nowBar"></div>
       <div class="nightbar" id="nightBar"></div>
-      <div class="nplan" id="nightPlan"></div>
 
       <div class="dayhero">
         <div class="ringbox">
@@ -5105,14 +5048,6 @@ function nightRowHtml(r) {
   return `<div class="night-row"><div class="night-time">${r.t}</div>` +
     `<div class="night-txt"><b>${r.b}</b><small>${r.d}</small></div></div>`;
 }
-/* компактная колонка: 4–5 ключевых пунктов, полный день — в свёрнутом виде */
-function nightPlanCol(cls, title, rows, picks) {
-  const key = picks.map(i => rows[i]).filter(Boolean);
-  return `<div class="nplan-col ${cls}"><b>${title}</b>` +
-    key.map(r => `<div class="np-line"><span class="t">${r.t}</span><span class="x">${r.b}</span></div>`).join("") +
-    `<details class="np-more"><summary>весь день · ${rows.length} пунктов</summary>` +
-    rows.map(nightRowHtml).join("") + `</details></div>`;
-}
 
 function renderNight() {
   nightBtnUpdate();
@@ -5135,41 +5070,6 @@ function renderNight() {
       (roll ? `<button class="minibtn" onclick="startNewDay()">Открыть новый день</button>` : "") +
       `<button class="minibtn" onclick="nightDisable()">Вернуть обычный график</button>`;
   }
-  renderNightPlan(p);
-}
-
-function renderNightPlan(p) {
-  const box = document.getElementById("nightPlan");
-  if (!box) return;
-  if (p === "off" || !NIGHT) { box.className = "nplan"; box.innerHTML = ""; return; }
-
-  const w = waterOf(state), done = itemsCount(state);
-  let todayTitle, tomorrowTitle, todayRows, tomorrowRows, todayPicks, tomorrowPicks, tip;
-  if (p === "shift") {
-    todayTitle = "Сегодня · смена";
-    tomorrowTitle = "Завтра · после смены";
-    todayRows = nightShiftRows();
-    tomorrowRows = nightAfterRows();
-    todayPicks = [2, 5, 6, 8, 11];      // завтрак, начало, обед, конец, подъём
-    tomorrowPicks = [0, 3, 5, 6, 10];    // подъём, завтрак, обед, прогулка, сон
-    tip = `Кофеин — только в первой половине смены. После смены сразу спать, без экрана.`;
-  } else {
-    todayTitle = "Сегодня · восстановление";
-    tomorrowTitle = "Завтра · обычный ритм";
-    todayRows = nightAfterRows();
-    tomorrowRows = nightNormalRows();
-    todayPicks = [0, 3, 5, 6, 10];
-    tomorrowPicks = [0, 2, 5, 7, 8];
-    tip = `Сегодня без силовой: зарядка, растяжка и прогулка на свету.`;
-  }
-  box.className = "nplan on";
-  box.innerHTML = `<h3>🌙 План на два дня <span class="nightchip">сон до ${hmAt(NIGHT.wakeAt)}</span></h3>` +
-    `<div class="nplan-grid">` +
-    nightPlanCol("today", todayTitle, todayRows, todayPicks) +
-    nightPlanCol("tomorrow", tomorrowTitle, tomorrowRows, tomorrowPicks) +
-    `</div><p class="nplan-note">` +
-    `<span class="np-stat">💧 ${w}/8</span><span class="np-stat">✅ ${done}/12</span>` +
-    `<span class="np-tip">${tip}</span></p>`;
 }
 
 /* карточка ночного режима на вкладке «Мой день» */
