@@ -2358,7 +2358,6 @@
 
     <section class="panel active" id="tr-info">
       <div id="trainNight" style="display:none;"></div>
-      <div class="card" id="trMi"></div>
       <div class="card">
         <h2>🏋️ Исходные данные</h2>
         <p>25 лет, 165 см, 89 кг → цель ~70–75 кг, ускоренный темп.</p>
@@ -3208,7 +3207,6 @@
   <div id="page-myday" style="display:none;">
     <div class="card nightcard" id="mdNight" style="display:none;"></div>
     <div class="card" id="mdHead"></div>
-    <div class="card" id="mdMi"></div>
     <div class="card" id="mdMenu"></div>
     <div class="card" id="mdTrain"></div>
     <div class="card" id="mdMeme"></div>
@@ -3485,8 +3483,6 @@ function mdRender() {
   const mi = (today.getDate() + w) % MEMES_IMG.length;
   document.getElementById("mdMeme").innerHTML =
     `<h2>😆 Мем дня</h2><figure class="memebox">${memeCardHTML(MEMES_IMG[mi], false)}</figure>`;
-
-  miRender();
 }
 
 /* ===== СПИСОК ПОКУПОК ===== */
@@ -3996,7 +3992,6 @@ function switchPlan(id) {
   document.getElementById('page-memes').style.display = (id === 'memes') ? '' : 'none';
   localStorage.setItem('plans-sub-main', id);
   if (id === 'myday') mdRender();
-  if (id === 'train') miTrainRender();
   if (id === 'shop') renderShop();
   if (id === 'memes') renderMemes();
   syncThemeColor();
@@ -4023,7 +4018,6 @@ function switchSub(group, id) {
   page.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   localStorage.setItem('plans-sub-' + group, id);
-  if (group === 'train' && id === 'tr-info') miTrainRender();
   /* «Рецепты» — под-вкладка «Питания»: показываем страницу рецептов и красим тему в персиковый */
   if (group === 'food') {
     const rp = document.getElementById('page-rec');
@@ -7088,218 +7082,6 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
       });
     }).catch(function () {});
   });
-}
-</script>
-<script>
-/* ================== MI FITNESS (мостик на ПК) ==================
-   Шаги, сон, пульс и тренировки с браслета/часов Xiaomi — из облака
-   Mi Fitness через маленький локальный сервер (папка mi-bridge рядом,
-   запускается start-bridge.bat). Облако без него недоступно, поэтому
-   офлайн показывается последний сохранённый кэш. */
-const MI_KEY = "fitcheck:mi";
-const MI_DEFAULT_URL = "http://127.0.0.1:8788";
-const MI_DEFAULT_TOKEN = "a8b5b6933727f509eca6c6d9";
-const MI_SYNC_EVERY_MS = 10 * 60 * 1000; /* сами обновляемся не чаще раза в 10 минут */
-
-function miState() {
-  let s = null;
-  try { s = JSON.parse(localStorage.getItem(MI_KEY) || "null"); } catch (e) {}
-  if (!s || typeof s !== "object") s = {};
-  if (!s.url) s.url = MI_DEFAULT_URL;
-  if (!s.token) s.token = MI_DEFAULT_TOKEN;
-  if (!s.summary) s.summary = null;
-  if (!s.workouts) s.workouts = null;
-  if (!s.summaryAt) s.summaryAt = 0;
-  if (!s.workoutsAt) s.workoutsAt = 0;
-  return s;
-}
-function miSave(s) { localStorage.setItem(MI_KEY, JSON.stringify(s)); }
-
-let miCfgOpen = false;
-const miBusy = { summary: false, workouts: false };
-
-/* ---------- форматирование ---------- */
-function miNum(n) {
-  if (n == null) return "—";
-  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-}
-function miKm(m) { return m == null ? "—" : (m / 1000).toFixed(1).replace(".", ",") + " км"; }
-function miHM(t) { return t ? t.slice(11, 16) : ""; }
-function miDM(min) {
-  if (min == null) return "—";
-  const h = Math.floor(min / 60), m = min % 60;
-  if (h && m) return h + " ч " + m + " м";
-  if (h) return h + " ч";
-  return m + " м";
-}
-function miDateLabel(iso) { return iso ? iso.slice(8, 10) + "." + iso.slice(5, 7) : ""; }
-function miClock(ts) {
-  return new Date(ts).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
-}
-
-/* ---------- синхронизация ---------- */
-function miFetch(kind, days) {
-  if (miBusy[kind]) return;
-  miBusy[kind] = true;
-  const s = miState();
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), 30000);
-  fetch(s.url + "/api/" + kind + "?token=" + encodeURIComponent(s.token) + "&days=" + days, { signal: ctl.signal })
-    .then(r => r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)))
-    .then(j => {
-      clearTimeout(timer);
-      miBusy[kind] = false;
-      if (j && j.ok === true) {
-        const st = miState();
-        if (kind === "summary") { st.summary = j; st.summaryAt = Date.now(); }
-        else { st.workouts = j; st.workoutsAt = Date.now(); }
-        miSave(st);
-      }
-      if (kind === "summary") miRender(); else miTrainRender();
-    })
-    .catch(() => {
-      clearTimeout(timer);
-      miBusy[kind] = false;
-      if (kind === "summary") miRender(); else miTrainRender();
-    });
-}
-
-function miSyncNow() {
-  const s = miState();
-  s.summaryAt = 0; s.workoutsAt = 0;
-  miSave(s);
-  miRender();
-  miTrainRender();
-}
-
-/* ---------- карточка «Мой день» ---------- */
-function miRender() {
-  const el = document.getElementById("mdMi");
-  if (!el) return;
-  const s = miState();
-  el.innerHTML = miDayCardHTML(s);
-  if (Date.now() - s.summaryAt > MI_SYNC_EVERY_MS) miFetch("summary", 7);
-}
-
-function miDayCardHTML(s) {
-  if (miCfgOpen) return miCfgHTML(s);
-
-  if (!s.summary) {
-    return '<h2>⌚ Mi Fitness</h2>' +
-      '<p class="muted">Шаги, сон и пульс с браслета — из облака Mi Fitness, через маленький сервер на компьютере (папка <b>mi-bridge</b>).</p>' +
-      '<p class="muted">Запустите на ПК <b>mi-bridge\\start-bridge.bat</b>, затем обновите.</p>' +
-      '<div class="sp-row" style="margin-top:10px;">' +
-      '<button class="sp-btn" onclick="miSyncNow()">↻ Обновить</button>' +
-      '<button class="sp-btn ghost" onclick="miCfgOpen=true;miRender()">⚙️ Адрес мостика</button></div>';
-  }
-
-  const days = s.summary.days || [];
-  const today = days.length ? days[days.length - 1] : null;
-  const yest = days.length > 1 ? days[days.length - 2] : null;
-
-  /* последняя сессия сна */
-  let sl = null, slDay = null;
-  for (let i = days.length - 1; i >= 0 && !sl; i--) {
-    if (days[i].sleep && days[i].sleep.sessions && days[i].sleep.sessions.length) {
-      sl = days[i].sleep; slDay = days[i].date;
-    }
-  }
-  const sess = sl ? sl.sessions[sl.sessions.length - 1] : null;
-
-  const steps = today && today.steps ? today.steps.steps : null;
-  const dist = today && today.steps ? today.steps.distance_m : null;
-  const rest = (yest && yest.hr && yest.hr.resting_bpm != null) ? yest.hr.resting_bpm
-    : (today && today.hr && today.hr.resting_bpm != null ? today.hr.resting_bpm : null);
-
-  let html = '<div class="pp-head"><b>⌚ Mi Fitness</b>' +
-    '<span class="muted">с браслета</span></div>';
-  html += '<div class="sp-grid">' +
-    '<div class="sp-cell"><b>' + miNum(steps) + '</b><span>шагов сегодня</span></div>' +
-    '<div class="sp-cell"><b>' + miKm(dist) + '</b><span>дистанция</span></div>' +
-    '<div class="sp-cell"><b>' + (rest != null ? rest : "—") + '</b><span>пульс покоем</span></div>' +
-    '</div>';
-  if (sess) {
-    html += '<p>😴 Последний сон (' + miDateLabel(slDay) + '): <b>' + miDM(sess.asleep_min) + '</b>' +
-      ' <span class="muted">(' + miHM(sess.start) + '–' + miHM(sess.end) + ')</span>' +
-      (sl.deep_min != null ? ' · глубокий ' + miDM(sl.deep_min) : '') +
-      (sl.rem_min != null ? ' · REM ' + miDM(sl.rem_min) : '') + '</p>';
-  }
-  if (yest && yest.steps) {
-    html += '<p class="muted">Вчера: ' + miNum(yest.steps.steps) + ' шагов · ' + miKm(yest.steps.distance_m) +
-      (yest.hr && yest.hr.resting_bpm != null ? ' · пульс покоем ' + yest.hr.resting_bpm : '') + '</p>';
-  }
-  html += '<p class="muted">обновлено ' + (s.summaryAt ? 'в ' + miClock(s.summaryAt) : '—') +
-    ' · <a href="javascript:void(0)" onclick="miSyncNow()">обновить</a>' +
-    ' · <a href="javascript:void(0)" onclick="miCfgOpen=true;miRender()">настройки</a></p>';
-  return html;
-}
-
-/* ---------- карточка «Тренировки» ---------- */
-function miTrainRender() {
-  const el = document.getElementById("trMi");
-  if (!el) return;
-  const s = miState();
-  el.innerHTML = miTrainCardHTML(s);
-  if (Date.now() - s.workoutsAt > MI_SYNC_EVERY_MS) miFetch("workouts", 30);
-}
-
-function miTrainCardHTML(s) {
-  if (miCfgOpen) return miCfgHTML(s);
-  if (!s.workouts) {
-    return '<h2>⌚ С браслета (Mi Fitness)</h2>' +
-      '<p class="muted">Тренировки, записанные браслетом, — через мостик на компьютере (папка <b>mi-bridge</b>).</p>' +
-      '<div class="sp-row" style="margin-top:10px;">' +
-      '<button class="sp-btn" onclick="miSyncNow()">↻ Обновить</button></div>';
-  }
-  const list = s.workouts.workouts || [];
-  let html = '<div class="pp-head"><b>⌚ С браслета — 30 дней</b>' +
-    '<span class="muted">' + list.length + ' зап.</span></div>';
-  if (!list.length) {
-    html += '<p class="muted">За месяц записей с браслета нет.</p>';
-  } else {
-    html += list.slice(0, 12).map(w => {
-      const bits = [];
-      if (w.duration_s) bits.push(Math.round(w.duration_s / 60) + " мин");
-      if (w.distance_m != null) bits.push(miKm(w.distance_m));
-      if (w.active_kcal != null) bits.push(w.active_kcal + " ккал");
-      if (w.avg_hr_bpm != null) bits.push("пульс " + w.avg_hr_bpm + (w.max_hr_bpm != null ? "/" + w.max_hr_bpm : ""));
-      if (w.steps != null) bits.push(miNum(w.steps) + " ш");
-      return '<p><b>' + miDateLabel(w.start) + ', ' + miHM(w.start) + '–' + miHM(w.end) + '</b>' +
-        (w.sport ? ' · ' + w.sport : '') +
-        (bits.length ? '<br><span class="muted">' + bits.join(" · ") + '</span>' : '') + '</p>';
-    }).join("<hr style='border:none;border-top:1px solid #2c3145;margin:8px 0;'>");
-  }
-  html += '<p class="muted">обновлено ' + (s.workoutsAt ? 'в ' + miClock(s.workoutsAt) : '—') +
-    ' · <a href="javascript:void(0)" onclick="miSyncNow()">обновить</a>' +
-    ' · <a href="javascript:void(0)" onclick="miCfgOpen=true;miTrainRender()">настройки</a></p>';
-  return html;
-}
-
-/* ---------- настройки мостика ---------- */
-function miCfgHTML(s) {
-  return '<div class="pp-head"><b>⌚ Mi Fitness — мостик</b></div>' +
-    '<p class="muted">Мостик — маленький сервер на компьютере (папка <b>mi-bridge</b>, запуск <b>start-bridge.bat</b>). ' +
-    'На телефоне укажите адрес компьютера вместо 127.0.0.1 — он напечатан в окне мостика, телефон должен быть в той же Wi-Fi сети.</p>' +
-    '<div class="sp-form">' +
-    '<input id="miUrl" type="text" value="' + s.url + '" placeholder="http://127.0.0.1:8788" aria-label="Адрес мостика">' +
-    '<input id="miToken" type="text" value="' + s.token + '" placeholder="токен из окна мостика" aria-label="Токен мостика">' +
-    '<div class="sp-row" style="margin-top:10px;">' +
-    '<button class="sp-btn" onclick="miCfgSave()">Сохранить</button>' +
-    '<button class="sp-btn ghost" onclick="miCfgOpen=false;miRender();miTrainRender()">Отмена</button>' +
-    '</div></div>';
-}
-
-function miCfgSave() {
-  const s = miState();
-  const u = (document.getElementById("miUrl").value || "").trim().replace(/\/+$/, "");
-  const t = (document.getElementById("miToken").value || "").trim();
-  if (u) s.url = u;
-  if (t) s.token = t;
-  s.summaryAt = 0; s.workoutsAt = 0;
-  miSave(s);
-  miCfgOpen = false;
-  miRender();
-  miTrainRender();
 }
 </script>
 </body>
