@@ -197,13 +197,6 @@
   .nightcard .note { border-top-color: rgba(255, 255, 255, .1); }
   .databtn.acc { background: var(--acc); border-color: var(--acc); color: #0b0e14; }
   .databtn.acc:hover { filter: brightness(1.08); background: var(--acc); }
-  #page-check .nplan-note { margin-top: 10px; font-size: 12px; line-height: 1.45; color: #a9aecb; }
-  #page-check .nplan-col .night-row { border-bottom-color: rgba(255, 255, 255, .06); }
-  #page-check .nplan-col .night-row:last-child { border-bottom: none; }
-  #page-check .nplan-col .night-time { flex-basis: 40px; font-size: 11.5px; }
-  #page-check .nplan-col .night-txt { font-size: 11.5px; }
-  #page-check .nplan-col .night-txt b { font-size: 12px; }
-  #page-check .nplan-col .night-txt small { font-size: 11px; }
 
   /* под-вкладки (недели) */
   .subtabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
@@ -391,19 +384,58 @@
   /* подсказки «сегодня / завтра» в ночной смене */
   #page-check .nplan { display: none; margin-bottom: 12px; }
   #page-check .nplan.on { display: block; animation: pagein .3s ease; }
-  #page-check .nplan h3 { font-size: 13px; color: var(--acc); margin-bottom: 8px; }
-  #page-check .nplan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  #page-check .nplan h3 {
+    font-size: 13px; color: var(--acc); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  #page-check .nplan h3 .nightchip {
+    font-size: 10.5px; font-weight: 600; color: #dbe3ff;
+    background: #263257; border: 1px solid #4b63a8;
+    border-radius: 999px; padding: 2px 7px;
+  }
+  #page-check .nplan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
   #page-check .nplan-col {
     background: #141a2e; border: 1px solid #2d3760; border-radius: 12px;
-    padding: 11px 12px;
+    padding: 9px 10px; min-width: 0;
   }
   #page-check .nplan-col.tomorrow { background: #1b1826; border-color: #4a3a63; }
-  #page-check .nplan-col b { display: block; font-size: 12.5px; color: #fff; margin-bottom: 7px; }
-  #page-check .nplan-col ul { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-  #page-check .nplan-col li {
-    position: relative; padding-left: 13px; font-size: 12px; line-height: 1.45; color: #c9cce0;
+  #page-check .nplan-col > b { display: block; font-size: 12px; color: #fff; margin-bottom: 5px; }
+  #page-check .np-line {
+    display: flex; align-items: baseline; gap: 7px;
+    padding: 3.5px 0; min-width: 0;
   }
-  #page-check .nplan-col li::before { content: "›"; position: absolute; left: 1px; color: var(--acc); }
+  #page-check .np-line + .np-line { border-top: 1px solid rgba(255, 255, 255, .05); }
+  #page-check .np-line .t {
+    flex: 0 0 36px; font-size: 10.5px; font-weight: 700;
+    color: #9fb4ff; font-variant-numeric: tabular-nums;
+  }
+  #page-check .np-line .x {
+    flex: 1; min-width: 0; font-size: 11.5px; line-height: 1.35;
+    color: #d6d9ec; overflow-wrap: anywhere;
+  }
+  #page-check .np-more { margin-top: 6px; border-top: 1px dashed rgba(255, 255, 255, .1); padding-top: 5px; }
+  #page-check .np-more > summary {
+    font-size: 11px; color: #8f94ad; cursor: pointer;
+    list-style: none; padding: 1px 0; -webkit-tap-highlight-color: transparent;
+  }
+  #page-check .np-more > summary::-webkit-details-marker { display: none; }
+  #page-check .np-more > summary::before { content: "▸ "; color: var(--acc); }
+  #page-check .np-more[open] > summary::before { content: "▾ "; }
+  #page-check .np-more .night-row { padding: 4px 0; border-bottom-color: rgba(255, 255, 255, .05); }
+  #page-check .np-more .night-row:last-child { border-bottom: none; }
+  #page-check .np-more .night-time { flex-basis: 36px; font-size: 10.5px; }
+  #page-check .np-more .night-txt { font-size: 11px; line-height: 1.35; }
+  #page-check .np-more .night-txt b { font-size: 11px; }
+  #page-check .np-more .night-txt small { font-size: 10.5px; }
+  #page-check .nplan-note { display: flex; flex-wrap: wrap; gap: 5px 6px; align-items: center; margin-top: 9px; }
+  #page-check .np-stat {
+    font-size: 10.5px; font-weight: 600; color: #dbe3ff;
+    background: rgba(255, 255, 255, .06); border: 1px solid rgba(255, 255, 255, .09);
+    border-radius: 999px; padding: 2px 8px; white-space: nowrap;
+  }
+  #page-check .np-tip {
+    flex: 1 1 100%; font-size: 11.5px; line-height: 1.45; color: #a9aecb;
+  }
   @media (max-width: 560px) { #page-check .nplan-grid { grid-template-columns: 1fr; } }
   /* шаги */
   #page-check .stepsbox {
@@ -2383,6 +2415,7 @@
 
     <section class="panel active" id="tr-info">
       <div id="trainNight" style="display:none;"></div>
+      <div class="card" id="trMi"></div>
       <div class="card">
         <h2>🏋️ Исходные данные</h2>
         <p>25 лет, 165 см, 89 кг → цель ~70–75 кг, ускоренный темп.</p>
@@ -3232,6 +3265,7 @@
   <div id="page-myday" style="display:none;">
     <div class="card nightcard" id="mdNight" style="display:none;"></div>
     <div class="card" id="mdHead"></div>
+    <div class="card" id="mdMi"></div>
     <div class="card" id="mdMenu"></div>
     <div class="card" id="mdTrain"></div>
     <div class="card" id="mdMeme"></div>
@@ -3508,6 +3542,8 @@ function mdRender() {
   const mi = (today.getDate() + w) % MEMES_IMG.length;
   document.getElementById("mdMeme").innerHTML =
     `<h2>😆 Мем дня</h2><figure class="memebox">${memeCardHTML(MEMES_IMG[mi], false)}</figure>`;
+
+  miRender();
 }
 
 /* ===== СПИСОК ПОКУПОК ===== */
@@ -4017,6 +4053,7 @@ function switchPlan(id) {
   document.getElementById('page-memes').style.display = (id === 'memes') ? '' : 'none';
   localStorage.setItem('plans-sub-main', id);
   if (id === 'myday') mdRender();
+  if (id === 'train') miTrainRender();
   if (id === 'shop') renderShop();
   if (id === 'memes') renderMemes();
   syncThemeColor();
@@ -4043,6 +4080,7 @@ function switchSub(group, id) {
   page.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   localStorage.setItem('plans-sub-' + group, id);
+  if (group === 'train' && id === 'tr-info') miTrainRender();
   /* «Рецепты» — под-вкладка «Питания»: показываем страницу рецептов и красим тему в персиковый */
   if (group === 'food') {
     const rp = document.getElementById('page-rec');
@@ -4498,6 +4536,8 @@ function catLoad() {
   if (typeof c.xp !== "number" || !isFinite(c.xp) || c.xp < 0) c.xp = 0;
   if (!c.days || typeof c.days !== "object" || Array.isArray(c.days)) c.days = {};
   if (typeof c.pats !== "number" || !isFinite(c.pats)) c.pats = 0;
+  /* последний день, когда проверяли серию (нужен, чтобы сброс был один раз) */
+  if (typeof c.seen !== "string") c.seen = "";
   /* прежнее имя «Рыжик» бережно меняем на Василису */
   if (/^рыжик$/i.test(c.name.trim())) {
     c.name = "Василиса";
@@ -4507,6 +4547,7 @@ function catLoad() {
   if (first) {
     c.xp = catSeed();
     c.days[currentDay] = 0;
+    c.seen = currentDay; /* новый кот не сбрасывается в первый же день */
     try { localStorage.setItem(CAT_KEY, JSON.stringify(c)); } catch (e) {}
   }
   return c;
@@ -4534,6 +4575,7 @@ function catSeed() {
 
 let cat = catLoad();
 let catFlash = false;
+let catResetUntil = 0;
 let catPatUntil = 0;
 
 function catSave() {
@@ -4583,9 +4625,25 @@ function catEarned() {
   return e;
 }
 
+/* Серия порвалась (вчерашний день не зачтён) — кот снова котёнок.
+   Проверяем один раз за новые сутки, чтобы не стирать рыбок,
+   заработанных уже после сброса. */
+function catCheckStreak() {
+  const today = todayKey();
+  if (cat.seen === today) return;
+  cat.seen = today;
+  const y = addDaysKey(today, -1);
+  if (dayDone(loadDay(y))) { catSave(); return; }
+  if (cat.xp > 0) catResetUntil = Date.now() + 8000;
+  cat.xp = 0;
+  cat.days = {};
+  catSave();
+}
+
 /* начисляем только прирост за день: снятая галочка не отнимает рыбок,
    но и не даёт заработать их заново */
 function catTick() {
+  catCheckStreak();
   const k = currentDay;
   const earned = catEarned();
   const prev = cat.days[k] || 0;
@@ -4609,6 +4667,7 @@ function catTick() {
 
 function catSpeech(mood) {
   if (Date.now() < catPatUntil) return "Мррр… ещё раз.";
+  if (catResetUntil && Date.now() < catResetUntil) return "Мяу… Ты пропустила день, и я снова котёнок. Но я рядом — начнём заново?";
   if (catFlash) return "Новый уровень! Смотри, какая я стала. 🎉";
   const arr = CAT_LINES[mood] || CAT_LINES.happy;
   const seed = itemsCount(state) + waterOf(state);
@@ -5046,8 +5105,13 @@ function nightRowHtml(r) {
   return `<div class="night-row"><div class="night-time">${r.t}</div>` +
     `<div class="night-txt"><b>${r.b}</b><small>${r.d}</small></div></div>`;
 }
-function nightColHtml(cls, title, rows) {
-  return `<div class="nplan-col ${cls}"><b>${title}</b>` + rows.map(nightRowHtml).join("") + `</div>`;
+/* компактная колонка: 4–5 ключевых пунктов, полный день — в свёрнутом виде */
+function nightPlanCol(cls, title, rows, picks) {
+  const key = picks.map(i => rows[i]).filter(Boolean);
+  return `<div class="nplan-col ${cls}"><b>${title}</b>` +
+    key.map(r => `<div class="np-line"><span class="t">${r.t}</span><span class="x">${r.b}</span></div>`).join("") +
+    `<details class="np-more"><summary>весь день · ${rows.length} пунктов</summary>` +
+    rows.map(nightRowHtml).join("") + `</details></div>`;
 }
 
 function renderNight() {
@@ -5080,25 +5144,32 @@ function renderNightPlan(p) {
   if (p === "off" || !NIGHT) { box.className = "nplan"; box.innerHTML = ""; return; }
 
   const w = waterOf(state), done = itemsCount(state);
-  let todayTitle, tomorrowTitle, todayRows, tomorrowRows, note;
+  let todayTitle, tomorrowTitle, todayRows, tomorrowRows, todayPicks, tomorrowPicks, tip;
   if (p === "shift") {
-    todayTitle = "Сегодня · ночная смена";
+    todayTitle = "Сегодня · смена";
     tomorrowTitle = "Завтра · после смены";
     todayRows = nightShiftRows();
     tomorrowRows = nightAfterRows();
-    note = `Вода: ${w}/8 · дела: ${done}/12. Кофеин — только в первой половине смены, вода — до ${hmOffset(NIGHT.shiftEnd, -120)}. После смены сразу спать, без экрана.`;
+    todayPicks = [2, 5, 6, 8, 11];      // завтрак, начало, обед, конец, подъём
+    tomorrowPicks = [0, 3, 5, 6, 10];    // подъём, завтрак, обед, прогулка, сон
+    tip = `Кофеин — только в первой половине смены. После смены сразу спать, без экрана.`;
   } else {
     todayTitle = "Сегодня · восстановление";
     tomorrowTitle = "Завтра · обычный ритм";
     todayRows = nightAfterRows();
     tomorrowRows = nightNormalRows();
-    note = `Вода: ${w}/8 · дела: ${done}/12. Сегодня без силовой: зарядка, растяжка и прогулка на свету. Если завтра снова смена — нажмите «Ночная смена» и укажите новое время.`;
+    todayPicks = [0, 3, 5, 6, 10];
+    tomorrowPicks = [0, 2, 5, 7, 8];
+    tip = `Сегодня без силовой: зарядка, растяжка и прогулка на свету.`;
   }
   box.className = "nplan on";
-  box.innerHTML = `<h3>🌙 План на два дня</h3><div class="nplan-grid">` +
-    nightColHtml("today", todayTitle, todayRows) +
-    nightColHtml("tomorrow", tomorrowTitle, tomorrowRows) +
-    `</div><p class="nplan-note">${note}</p>`;
+  box.innerHTML = `<h3>🌙 План на два дня <span class="nightchip">сон до ${hmAt(NIGHT.wakeAt)}</span></h3>` +
+    `<div class="nplan-grid">` +
+    nightPlanCol("today", todayTitle, todayRows, todayPicks) +
+    nightPlanCol("tomorrow", tomorrowTitle, tomorrowRows, tomorrowPicks) +
+    `</div><p class="nplan-note">` +
+    `<span class="np-stat">💧 ${w}/8</span><span class="np-stat">✅ ${done}/12</span>` +
+    `<span class="np-tip">${tip}</span></p>`;
 }
 
 /* карточка ночного режима на вкладке «Мой день» */
@@ -7117,6 +7188,218 @@ if ('serviceWorker' in navigator && /^https?:$/.test(location.protocol)) {
       });
     }).catch(function () {});
   });
+}
+</script>
+<script>
+/* ================== MI FITNESS (мостик на ПК) ==================
+   Шаги, сон, пульс и тренировки с браслета/часов Xiaomi — из облака
+   Mi Fitness через маленький локальный сервер (папка mi-bridge рядом,
+   запускается start-bridge.bat). Облако без него недоступно, поэтому
+   офлайн показывается последний сохранённый кэш. */
+const MI_KEY = "fitcheck:mi";
+const MI_DEFAULT_URL = "http://127.0.0.1:8788";
+const MI_DEFAULT_TOKEN = "a8b5b6933727f509eca6c6d9";
+const MI_SYNC_EVERY_MS = 10 * 60 * 1000; /* сами обновляемся не чаще раза в 10 минут */
+
+function miState() {
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(MI_KEY) || "null"); } catch (e) {}
+  if (!s || typeof s !== "object") s = {};
+  if (!s.url) s.url = MI_DEFAULT_URL;
+  if (!s.token) s.token = MI_DEFAULT_TOKEN;
+  if (!s.summary) s.summary = null;
+  if (!s.workouts) s.workouts = null;
+  if (!s.summaryAt) s.summaryAt = 0;
+  if (!s.workoutsAt) s.workoutsAt = 0;
+  return s;
+}
+function miSave(s) { localStorage.setItem(MI_KEY, JSON.stringify(s)); }
+
+let miCfgOpen = false;
+const miBusy = { summary: false, workouts: false };
+
+/* ---------- форматирование ---------- */
+function miNum(n) {
+  if (n == null) return "—";
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+function miKm(m) { return m == null ? "—" : (m / 1000).toFixed(1).replace(".", ",") + " км"; }
+function miHM(t) { return t ? t.slice(11, 16) : ""; }
+function miDM(min) {
+  if (min == null) return "—";
+  const h = Math.floor(min / 60), m = min % 60;
+  if (h && m) return h + " ч " + m + " м";
+  if (h) return h + " ч";
+  return m + " м";
+}
+function miDateLabel(iso) { return iso ? iso.slice(8, 10) + "." + iso.slice(5, 7) : ""; }
+function miClock(ts) {
+  return new Date(ts).toLocaleTimeString("ru-RU", { hour: "2-digit", minute: "2-digit" });
+}
+
+/* ---------- синхронизация ---------- */
+function miFetch(kind, days) {
+  if (miBusy[kind]) return;
+  miBusy[kind] = true;
+  const s = miState();
+  const ctl = new AbortController();
+  const timer = setTimeout(() => ctl.abort(), 30000);
+  fetch(s.url + "/api/" + kind + "?token=" + encodeURIComponent(s.token) + "&days=" + days, { signal: ctl.signal })
+    .then(r => r.ok ? r.json() : Promise.reject(new Error("HTTP " + r.status)))
+    .then(j => {
+      clearTimeout(timer);
+      miBusy[kind] = false;
+      if (j && j.ok === true) {
+        const st = miState();
+        if (kind === "summary") { st.summary = j; st.summaryAt = Date.now(); }
+        else { st.workouts = j; st.workoutsAt = Date.now(); }
+        miSave(st);
+      }
+      if (kind === "summary") miRender(); else miTrainRender();
+    })
+    .catch(() => {
+      clearTimeout(timer);
+      miBusy[kind] = false;
+      if (kind === "summary") miRender(); else miTrainRender();
+    });
+}
+
+function miSyncNow() {
+  const s = miState();
+  s.summaryAt = 0; s.workoutsAt = 0;
+  miSave(s);
+  miRender();
+  miTrainRender();
+}
+
+/* ---------- карточка «Мой день» ---------- */
+function miRender() {
+  const el = document.getElementById("mdMi");
+  if (!el) return;
+  const s = miState();
+  el.innerHTML = miDayCardHTML(s);
+  if (Date.now() - s.summaryAt > MI_SYNC_EVERY_MS) miFetch("summary", 7);
+}
+
+function miDayCardHTML(s) {
+  if (miCfgOpen) return miCfgHTML(s);
+
+  if (!s.summary) {
+    return '<h2>⌚ Mi Fitness</h2>' +
+      '<p class="muted">Шаги, сон и пульс с браслета — из облака Mi Fitness, через маленький сервер на компьютере (папка <b>mi-bridge</b>).</p>' +
+      '<p class="muted">Запустите на ПК <b>mi-bridge\\start-bridge.bat</b>, затем обновите.</p>' +
+      '<div class="sp-row" style="margin-top:10px;">' +
+      '<button class="sp-btn" onclick="miSyncNow()">↻ Обновить</button>' +
+      '<button class="sp-btn ghost" onclick="miCfgOpen=true;miRender()">⚙️ Адрес мостика</button></div>';
+  }
+
+  const days = s.summary.days || [];
+  const today = days.length ? days[days.length - 1] : null;
+  const yest = days.length > 1 ? days[days.length - 2] : null;
+
+  /* последняя сессия сна */
+  let sl = null, slDay = null;
+  for (let i = days.length - 1; i >= 0 && !sl; i--) {
+    if (days[i].sleep && days[i].sleep.sessions && days[i].sleep.sessions.length) {
+      sl = days[i].sleep; slDay = days[i].date;
+    }
+  }
+  const sess = sl ? sl.sessions[sl.sessions.length - 1] : null;
+
+  const steps = today && today.steps ? today.steps.steps : null;
+  const dist = today && today.steps ? today.steps.distance_m : null;
+  const rest = (yest && yest.hr && yest.hr.resting_bpm != null) ? yest.hr.resting_bpm
+    : (today && today.hr && today.hr.resting_bpm != null ? today.hr.resting_bpm : null);
+
+  let html = '<div class="pp-head"><b>⌚ Mi Fitness</b>' +
+    '<span class="muted">с браслета</span></div>';
+  html += '<div class="sp-grid">' +
+    '<div class="sp-cell"><b>' + miNum(steps) + '</b><span>шагов сегодня</span></div>' +
+    '<div class="sp-cell"><b>' + miKm(dist) + '</b><span>дистанция</span></div>' +
+    '<div class="sp-cell"><b>' + (rest != null ? rest : "—") + '</b><span>пульс покоем</span></div>' +
+    '</div>';
+  if (sess) {
+    html += '<p>😴 Последний сон (' + miDateLabel(slDay) + '): <b>' + miDM(sess.asleep_min) + '</b>' +
+      ' <span class="muted">(' + miHM(sess.start) + '–' + miHM(sess.end) + ')</span>' +
+      (sl.deep_min != null ? ' · глубокий ' + miDM(sl.deep_min) : '') +
+      (sl.rem_min != null ? ' · REM ' + miDM(sl.rem_min) : '') + '</p>';
+  }
+  if (yest && yest.steps) {
+    html += '<p class="muted">Вчера: ' + miNum(yest.steps.steps) + ' шагов · ' + miKm(yest.steps.distance_m) +
+      (yest.hr && yest.hr.resting_bpm != null ? ' · пульс покоем ' + yest.hr.resting_bpm : '') + '</p>';
+  }
+  html += '<p class="muted">обновлено ' + (s.summaryAt ? 'в ' + miClock(s.summaryAt) : '—') +
+    ' · <a href="javascript:void(0)" onclick="miSyncNow()">обновить</a>' +
+    ' · <a href="javascript:void(0)" onclick="miCfgOpen=true;miRender()">настройки</a></p>';
+  return html;
+}
+
+/* ---------- карточка «Тренировки» ---------- */
+function miTrainRender() {
+  const el = document.getElementById("trMi");
+  if (!el) return;
+  const s = miState();
+  el.innerHTML = miTrainCardHTML(s);
+  if (Date.now() - s.workoutsAt > MI_SYNC_EVERY_MS) miFetch("workouts", 30);
+}
+
+function miTrainCardHTML(s) {
+  if (miCfgOpen) return miCfgHTML(s);
+  if (!s.workouts) {
+    return '<h2>⌚ С браслета (Mi Fitness)</h2>' +
+      '<p class="muted">Тренировки, записанные браслетом, — через мостик на компьютере (папка <b>mi-bridge</b>).</p>' +
+      '<div class="sp-row" style="margin-top:10px;">' +
+      '<button class="sp-btn" onclick="miSyncNow()">↻ Обновить</button></div>';
+  }
+  const list = s.workouts.workouts || [];
+  let html = '<div class="pp-head"><b>⌚ С браслета — 30 дней</b>' +
+    '<span class="muted">' + list.length + ' зап.</span></div>';
+  if (!list.length) {
+    html += '<p class="muted">За месяц записей с браслета нет.</p>';
+  } else {
+    html += list.slice(0, 12).map(w => {
+      const bits = [];
+      if (w.duration_s) bits.push(Math.round(w.duration_s / 60) + " мин");
+      if (w.distance_m != null) bits.push(miKm(w.distance_m));
+      if (w.active_kcal != null) bits.push(w.active_kcal + " ккал");
+      if (w.avg_hr_bpm != null) bits.push("пульс " + w.avg_hr_bpm + (w.max_hr_bpm != null ? "/" + w.max_hr_bpm : ""));
+      if (w.steps != null) bits.push(miNum(w.steps) + " ш");
+      return '<p><b>' + miDateLabel(w.start) + ', ' + miHM(w.start) + '–' + miHM(w.end) + '</b>' +
+        (w.sport ? ' · ' + w.sport : '') +
+        (bits.length ? '<br><span class="muted">' + bits.join(" · ") + '</span>' : '') + '</p>';
+    }).join("<hr style='border:none;border-top:1px solid #2c3145;margin:8px 0;'>");
+  }
+  html += '<p class="muted">обновлено ' + (s.workoutsAt ? 'в ' + miClock(s.workoutsAt) : '—') +
+    ' · <a href="javascript:void(0)" onclick="miSyncNow()">обновить</a>' +
+    ' · <a href="javascript:void(0)" onclick="miCfgOpen=true;miTrainRender()">настройки</a></p>';
+  return html;
+}
+
+/* ---------- настройки мостика ---------- */
+function miCfgHTML(s) {
+  return '<div class="pp-head"><b>⌚ Mi Fitness — мостик</b></div>' +
+    '<p class="muted">Мостик — маленький сервер на компьютере (папка <b>mi-bridge</b>, запуск <b>start-bridge.bat</b>). ' +
+    'На телефоне укажите адрес компьютера вместо 127.0.0.1 — он напечатан в окне мостика, телефон должен быть в той же Wi-Fi сети.</p>' +
+    '<div class="sp-form">' +
+    '<input id="miUrl" type="text" value="' + s.url + '" placeholder="http://127.0.0.1:8788" aria-label="Адрес мостика">' +
+    '<input id="miToken" type="text" value="' + s.token + '" placeholder="токен из окна мостика" aria-label="Токен мостика">' +
+    '<div class="sp-row" style="margin-top:10px;">' +
+    '<button class="sp-btn" onclick="miCfgSave()">Сохранить</button>' +
+    '<button class="sp-btn ghost" onclick="miCfgOpen=false;miRender();miTrainRender()">Отмена</button>' +
+    '</div></div>';
+}
+
+function miCfgSave() {
+  const s = miState();
+  const u = (document.getElementById("miUrl").value || "").trim().replace(/\/+$/, "");
+  const t = (document.getElementById("miToken").value || "").trim();
+  if (u) s.url = u;
+  if (t) s.token = t;
+  s.summaryAt = 0; s.workoutsAt = 0;
+  miSave(s);
+  miCfgOpen = false;
+  miRender();
+  miTrainRender();
 }
 </script>
 </body>

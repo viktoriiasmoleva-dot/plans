@@ -1,6 +1,6 @@
 /* Service worker приложения «Планы»: офлайн-режим.
    Версию кэша меняем при каждом обновлении index.html. */
-const CACHE = 'plans-v3-2026-11-23a';
+const CACHE = 'plans-v3-2026-11-27a';
 
 const ASSETS = [
   './',
@@ -56,6 +56,9 @@ self.addEventListener('fetch', (e) => {
 
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
+
+  /* запросы к мостику Mi Fitness всегда идут в сеть: они живые */
+  if (url.pathname.indexOf('/api/') === 0) return;
 
   /* страницы: сначала сеть (чтобы обновления прилетали), при ошибке — из кэша */
   if (req.mode === 'navigate') {
