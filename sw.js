@@ -1,6 +1,6 @@
 /* Service worker приложения «Планы»: офлайн-режим.
    Версию кэша меняем при каждом обновлении index.html. */
-const CACHE = 'plans-v3-2026-11-27b';
+const CACHE = 'plans-v3-2026-11-28m';
 
 const ASSETS = [
   './',
@@ -10,27 +10,19 @@ const ASSETS = [
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-512-maskable.png',
-  './memes/ru-den-2-diety-koty.webp',
-  './memes/ru-hulahup.webp',
-  './memes/ru-kot-shashlyk.webp',
-  './memes/ru-lift-lestnica.webp',
-  './memes/ru-ne-segodnya.webp',
-  './memes/ru-nochnaya-sosiska.webp',
-  './memes/ru-otmechayu-pohudenie.webp',
-  './memes/ru-pravda-o-racione.webp',
-  './memes/ru-tort-mozhno.webp',
-  './memes/ru-vesy-koty.webp',
-  './memes/ru-voda-s-limonom.webp',
-  './memes/ru2-demony-hotdog.jpg',
-  './memes/ru2-dorozhka-kot.jpg',
-  './memes/ru2-eda-doma-kot.jpg',
-  './memes/ru2-ischezaet-zhelanie.jpg',
-  './memes/ru2-kefir-vilkoy.jpg',
-  './memes/ru2-mama-zovyot.jpg',
-  './memes/ru2-ne-v-mom-vkuse.jpg',
-  './memes/ru2-ostalos-7.jpg',
-  './memes/ru2-ptichki-dieta.jpg',
-  './memes/ru2-strannyy-son.jpg'
+  './memes/ru3-dieta-1.jpg',
+  './memes/ru3-dieta-2.jpg',
+  './memes/ru3-dieta-3.jpg',
+  './memes/ru3-dieta-4.jpg',
+  './memes/ru3-dieta-5.jpg',
+  './memes/ru3-dieta-6.jpg',
+  './memes/ru3-dieta-7.jpg',
+  './memes/ru3-dieta-8.jpg',
+  './memes/ru3-dieta-9.jpg',
+  './memes/ru3-dieta-10.jpg',
+  './memes/ru3-dieta-11.jpg',
+  './memes/ru3-dieta-12.jpg',
+  './memes/ru3-dieta-13.jpg'
 ];
 
 self.addEventListener('install', (e) => {
